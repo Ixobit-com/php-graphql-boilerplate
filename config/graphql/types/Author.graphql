@@ -1,0 +1,13 @@
+type Author {
+    id: ID!
+    name: String!
+    dateOfBirth: DateTime!
+    bio: String!
+    books: [Book!]!
+}
+
+input CreateAuthorInput {
+    name: String!
+    dateOfBirth: String!
+    bio: String!
+}

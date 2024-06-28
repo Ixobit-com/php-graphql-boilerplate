@@ -1,0 +1,45 @@
+server {
+       listen         80;
+       listen    [::]:80;
+       server_name    graphql.local;
+       return         301 https://$server_name$request_uri;
+       gzip off;
+}
+
+server {
+    server_name            graphql.local;
+
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    ssl_certificate       /etc/nginx/ssl/local.crt;
+    ssl_certificate_key   /etc/nginx/ssl/local.key;
+    ssl_protocols         TLSv1.2 TLSv1.3;
+    ssl_ciphers           EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+
+    client_max_body_size 2M;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    root /var/www/html/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php$uri?$args;
+    }
+
+    location ~ "^(.+\.php)($|/)" {
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_pass   php-fpm:9000;
+            fastcgi_buffers         16  16k;
+            fastcgi_buffer_size         32k;
+            proxy_buffer_size          128k;
+            proxy_buffers            4 256k;
+            proxy_busy_buffers_size    256k;
+        include        fastcgi_params;
+    }
+}
