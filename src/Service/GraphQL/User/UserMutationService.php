@@ -19,7 +19,7 @@ class UserMutationService
     ) {}
 
 
-    public function profileUpdate(array $data): ?User
+    public function userUpdate(array $data): ?User
     {
         $user = $this->security->getUser();
 

@@ -1,3 +1,4 @@
 type UserQuery {
-    profile: User
+    user: User # get current logged in user
+    users(pagination: paginationInput): [User] # get paginated users list
 }

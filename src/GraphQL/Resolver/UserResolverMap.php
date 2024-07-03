@@ -30,7 +30,11 @@ class UserResolverMap extends ResolverMap
                     ResolveInfo $info
                 ) {
                     return match ($info->fieldName) {
-                        'profile' => $this->userQueryService->profile(),
+                        'user'  => $this->userQueryService->user(),
+                        'users' => $this->userQueryService->users(
+                            limit: $args['pagination']['limit'],
+                            offset: $args['pagination']['offset']
+                        ),
                         default => null
                     };
                 },
@@ -43,7 +47,7 @@ class UserResolverMap extends ResolverMap
                     ResolveInfo $info
                 ) {
                     return match ($info->fieldName) {
-                        'profileUpdate' => $this->userMutationService->profileUpdate($args['user']),
+                        'userUpdate' => $this->userMutationService->userUpdate($args['user']),
                         default => null
                     };
                 },
