@@ -1,0 +1,20 @@
+type LibraryMutation {
+    createAuthor(author: CreateAuthorInput!): Author!
+    updateBook(id: ID!, book: UpdateBook!): Book!
+}
+
+input CreateAuthorInput {
+    name: String!
+    dateOfBirth: String!
+    bio: String!
+}
+
+input UpdateBook {
+    title: String
+    author: ID
+    synopsis: String
+    releaseYear: String
+    genre: String
+    averageRating: Int
+    copiesSold: Int
+}

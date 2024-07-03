@@ -3,18 +3,18 @@
 namespace App\GraphQL\Resolver;
 
 use App\GraphQL\Language\AST\Node\DateTimeType;
-use App\Service\MutationService;
-use App\Service\QueryService;
+use App\Service\GraphQL\Library\LibraryMutationService;
+use App\Service\GraphQL\Library\LibraryQueryService;
 use ArrayObject;
 use GraphQL\Type\Definition\ResolveInfo;
 use Overblog\GraphQLBundle\Definition\ArgumentInterface;
 use Overblog\GraphQLBundle\Resolver\ResolverMap;
 
-class CustomResolverMap extends ResolverMap
+class LibraryResolverMap extends ResolverMap
 {
     public function __construct(
-        private readonly QueryService $queryService,
-        private readonly MutationService $mutationService
+        private readonly LibraryQueryService $queryService,
+        private readonly LibraryMutationService $mutationService
     ) {}
 
     /**
@@ -23,7 +23,7 @@ class CustomResolverMap extends ResolverMap
     protected function map(): array
     {
         return [
-            'RootQuery'    => [
+            'LibraryQuery'    => [
                 self::RESOLVE_FIELD => function (
                     $value,
                     ArgumentInterface $args,
@@ -32,7 +32,7 @@ class CustomResolverMap extends ResolverMap
                 ) {
                     return match ($info->fieldName) {
                         'author' => $this->queryService->findAuthor((int)$args['id']),
-                        'authors' => $this->queryService->getAllAuthors(),
+                        'authors' => $this->queryService->getAllAuthors((int)$args['page']),
                         'findBooksByAuthor' => $this->queryService->findBooksByAuthor($args['name']),
                         'books' => $this->queryService->findAllBooks(),
                         'findBooksByGenre' => $this->queryService->findBooksByGenre($args['genre']),
@@ -41,7 +41,7 @@ class CustomResolverMap extends ResolverMap
                     };
                 },
             ],
-            'RootMutation' => [
+            'LibraryMutation' => [
                 self::RESOLVE_FIELD => function (
                     $value,
                     ArgumentInterface $args,

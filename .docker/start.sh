@@ -8,9 +8,6 @@ txtrst=$(tput sgr0)       # Text reset
 ## Get configuration parameters
 source .env
 
-## current user - will use in containers
-export UID
-
 ## Configure SSL certs for domains in .env
 if ! [ -f ./nginx/ssl/v3.ext ]; then
   cd ./nginx/ssl/ && ./crt.sh && cd ../../

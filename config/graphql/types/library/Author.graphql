@@ -5,9 +5,3 @@ type Author {
     bio: String!
     books: [Book!]!
 }
-
-input CreateAuthorInput {
-    name: String!
-    dateOfBirth: String!
-    bio: String!
-}

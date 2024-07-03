@@ -8,13 +8,3 @@ type Book {
     averageRating: Int!
     copiesSold: Int!
 }
-
-input UpdateBook {
-    title: String
-    author: ID
-    synopsis: String
-    releaseYear: String
-    genre: String
-    averageRating: Int
-    copiesSold: Int
-}

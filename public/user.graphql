@@ -1,0 +1,21 @@
+schema {
+  query: UserQuery
+  mutation: UserMutation
+}
+
+type UserQuery {
+  profile: User
+}
+
+type User {
+  id: ID!
+  email: String
+}
+
+type UserMutation {
+  updateUser(user: UpdateUser!): User!
+}
+
+input UpdateUser {
+  email: String
+}

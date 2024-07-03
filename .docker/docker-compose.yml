@@ -12,7 +12,8 @@ services:
     build:
       context: nginx
       args:
-        UID: ${UID}
+        UID: ${USER_ID}
+        GID: ${GROUP_ID}
     container_name: nginx
     working_dir: /var/www/html
     networks:
@@ -31,7 +32,8 @@ services:
     build:
       context: php-fpm
       args:
-        UID: ${UID}
+        UID: ${USER_ID}
+        GID: ${GROUP_ID}
     container_name: php-fpm
     working_dir: /var/www/html
     networks:
@@ -44,7 +46,7 @@ services:
     environment:
       PHP_IDE_CONFIG: "serverName=Docker"
       XDEBUG_MODE: "debug"
-      XDEBUG_CONFIG: "client_host=${HOST_IP}"
+      XDEBUG_CONFIG: "client_host=${HOST_IP} client_port=${XDEBUG_CLIENT_PORT}"
 
   mysql:
     image: mysql:8.0

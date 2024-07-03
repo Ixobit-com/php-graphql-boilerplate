@@ -1,8 +1,12 @@
 overblog_graphql:
     definitions:
         schema:
-            query: RootQuery
-            mutation: RootMutation
+            user:
+                query: UserQuery
+                mutation: UserMutation
+            library:
+                query: LibraryQuery
+                mutation: LibraryMutation
         mappings:
             types:
                 -

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\GraphQL\Library;
 
 use App\Entity\Author;
 use App\Entity\Book;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use GraphQL\Error\Error;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
-class MutationService
+class LibraryMutationService
 {
     public function __construct(
         private EntityManagerInterface $manager
@@ -29,15 +30,16 @@ class MutationService
 
     public function updateBook(int $bookId, array $newDetails): Book
     {
-        $book = $this->manager->getRepository(Book::class)->find($bookId);
+        $em = $this->manager->getRepository(Book::class);
+        /** @var Book $book */
+        $book = $em->find($bookId);
 
         if (is_null($book)) {
             throw new Error("Could not find book for specified ID");
         }
 
-        foreach ($newDetails as $property => $value) {
-            $book->$property = $value;
-        }
+        $hydrator = new DoctrineHydrator($this->manager);
+        $hydrator->hydrate($newDetails, $book);
 
         $this->manager->persist($book);
         $this->manager->flush();

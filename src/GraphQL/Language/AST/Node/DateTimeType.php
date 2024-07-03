@@ -4,7 +4,6 @@ namespace App\GraphQL\Language\AST\Node;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\ScalarType;
-use Overblog\GraphQLBundle\Annotation as GQL;
 
 class DateTimeType extends ScalarType
 {

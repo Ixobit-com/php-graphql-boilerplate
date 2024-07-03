@@ -1,4 +1,0 @@
-type RootMutation {
-    createAuthor(author: CreateAuthorInput!): Author!
-    updateBook(id: ID!, book: UpdateBook!): Book!
-}

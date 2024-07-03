@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\GraphQL\Library;
 
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Bundle\SecurityBundle\Security;
 
-class QueryService
+class LibraryQueryService
 {
     public function __construct(
         private AuthorRepository $authorRepository,
         private BookRepository   $bookRepository,
+        private Security $security,
     ) {}
 
     public function findAuthor(int $authorId): ?Author
@@ -20,9 +22,12 @@ class QueryService
         return $this->authorRepository->find($authorId);
     }
 
-    public function getAllAuthors(): array
+    public function getAllAuthors(int $page): array
     {
-        return $this->authorRepository->findAll();
+//        $user = $this->security->getUser();
+// pagination
+
+        return $this->authorRepository->findBy([], [], 10, $page*10);
     }
 
     public function findBooksByAuthor(string $authorName): Collection
