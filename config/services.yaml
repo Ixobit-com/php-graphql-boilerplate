@@ -19,9 +19,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\GraphQL\Resolver\LibraryResolverMap:
-        tags:
-            - { name: overblog_graphql.resolver_map, schema: library }
     App\GraphQL\Resolver\UserResolverMap:
         tags:
             - { name: overblog_graphql.resolver_map, schema: user }

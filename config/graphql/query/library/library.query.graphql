@@ -1,8 +1,0 @@
-type LibraryQuery {
-    author(id: ID!): Author
-    authors(page: Int): [Author!]!
-    findBooksByAuthor(name: String!) : [Book!]!
-    books: [Book!]!
-    findBooksByGenre(genre: String!) : [Book!]!
-    book(id:ID!): Book
-}

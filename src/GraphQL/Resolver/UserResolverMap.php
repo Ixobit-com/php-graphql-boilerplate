@@ -8,12 +8,14 @@ use ArrayObject;
 use GraphQL\Type\Definition\ResolveInfo;
 use Overblog\GraphQLBundle\Definition\ArgumentInterface;
 use Overblog\GraphQLBundle\Resolver\ResolverMap;
+use App\Service\DTO\DTOService;
 
 class UserResolverMap extends ResolverMap
 {
     public function __construct(
         private readonly UserQueryService $userQueryService,
-        private readonly UserMutationService $userMutationService
+        private readonly UserMutationService $userMutationService,
+        private readonly DTOService $DTOService
     ) {}
 
     /**
@@ -29,12 +31,12 @@ class UserResolverMap extends ResolverMap
                     ArrayObject $context,
                     ResolveInfo $info
                 ) {
+
+                    $dto = $this->DTOService->convertToDTO($info);
+
                     return match ($info->fieldName) {
                         'user'  => $this->userQueryService->user(),
-                        'users' => $this->userQueryService->users(
-                            limit: $args['pagination']['limit'],
-                            offset: $args['pagination']['offset']
-                        ),
+                        'users' => $this->userQueryService->users($dto['paginationInputDTO']),
                         default => null
                     };
                 },
@@ -46,8 +48,12 @@ class UserResolverMap extends ResolverMap
                     ArrayObject $context,
                     ResolveInfo $info
                 ) {
+
+                    $dto = $this->DTOService->convertToDTO($info);
+
                     return match ($info->fieldName) {
-                        'userUpdate' => $this->userMutationService->userUpdate($args['user']),
+                        'userCreate'    => $this->userMutationService->userCreate($dto['userCreateInputDTO']),
+                        'userUpdate'    => $this->userMutationService->userUpdate($dto['userUpdateInputDTO']),
                         default => null
                     };
                 },

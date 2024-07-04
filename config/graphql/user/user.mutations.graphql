@@ -1,0 +1,4 @@
+type UserMutation {
+    createreate(user: userCreateInputDTO!): User!
+    userUpdate(user: userUpdateInputDTO!): User!
+}

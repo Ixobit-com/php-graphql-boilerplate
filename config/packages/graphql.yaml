@@ -4,9 +4,6 @@ overblog_graphql:
             user:
                 query: UserQuery
                 mutation: UserMutation
-            library:
-                query: LibraryQuery
-                mutation: LibraryMutation
         mappings:
             types:
                 -

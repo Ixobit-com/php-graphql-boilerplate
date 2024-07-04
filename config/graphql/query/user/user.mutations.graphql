@@ -1,7 +1,0 @@
-type UserMutation {
-    profileUpdate(user: profileUpdateInput!): User!
-}
-
-input profileUpdateInput {
-    email: String
-}

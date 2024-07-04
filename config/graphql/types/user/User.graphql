@@ -1,8 +1,8 @@
 type User {
     id: ID!
-    email: String
-    roles: [String!]
-    profile: UserProfile
+    email: String!
+    roles: [Role!]
+    profile: UserProfile!
 }
 
 type UserProfile {

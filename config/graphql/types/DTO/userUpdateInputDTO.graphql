@@ -1,0 +1,7 @@
+input userUpdateInputDTO {  # PHP Class: App\DTO\userUpdateInputDTO
+    id: ID!
+    email: String
+    password: String
+    roles: [Role]
+    profile: profileUpdateInputDTO
+}
