@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Profile;
+use App\Service\CustomSecurity\Roles;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\User;
@@ -35,15 +36,25 @@ class UserFixtures extends Fixture
             );
         }
 
-        $admin = (new User())
-                ->setEmail("admin@mail.com")
-        ->setRoles(["ROLE_SUPERADMIN", "ROLE_USER"])
+        $orgadmin = (new User())
+                ->setEmail("admin@example.com")
+        ->setRoles([Roles::ROLE_ORGANIZATION_ADMIN, Roles::ROLE_USER])
         ->setProfile(
             (new Profile())
                 ->setFirstName("Admin")
                 ->setLastName("Admin"));
-        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
-        $manager->persist($admin);
+        $orgadmin->setPassword($this->passwordHasher->hashPassword($orgadmin, 'password'));
+        $manager->persist($orgadmin);
+
+        $superadmin = (new User())
+            ->setEmail("superadmin@example.com")
+            ->setRoles([Roles::ROLE_SUPERADMIN, Roles::ROLE_USER])
+            ->setProfile(
+                (new Profile())
+                    ->setFirstName("Super")
+                    ->setLastName("Super"));
+        $superadmin->setPassword($this->passwordHasher->hashPassword($superadmin, 'password'));
+        $manager->persist($superadmin);
 
         $manager->flush();
     }

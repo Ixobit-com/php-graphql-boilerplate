@@ -1,4 +1,5 @@
 type UserMutation {
-    createreate(user: userCreateInputDTO!): User!
-    userUpdate(user: userUpdateInputDTO!): User!
+    userCreate(user: userCreateInputDTO!): User!
+    userUpdate(id: ID!, user: userUpdateInputDTO!): User!
+    userPromote(id: ID!, roles: [Role]!): Role!
 }

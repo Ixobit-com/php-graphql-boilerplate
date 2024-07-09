@@ -32,11 +32,11 @@ class UserResolverMap extends ResolverMap
                     ResolveInfo $info
                 ) {
 
-                    $dto = $this->DTOService->convertToDTO($info);
+                    $dto = $this->DTOService->convertGraphQLToDTO($info);
 
                     return match ($info->fieldName) {
                         'user'  => $this->userQueryService->user(),
-                        'users' => $this->userQueryService->users($dto['paginationInputDTO']),
+                        'users' => $this->userQueryService->users($dto['pagination']),
                         default => null
                     };
                 },
@@ -49,11 +49,11 @@ class UserResolverMap extends ResolverMap
                     ResolveInfo $info
                 ) {
 
-                    $dto = $this->DTOService->convertToDTO($info);
+                    $dto = $this->DTOService->convertGraphQLToDTO($info);
 
                     return match ($info->fieldName) {
-                        'userCreate'    => $this->userMutationService->userCreate($dto['userCreateInputDTO']),
-                        'userUpdate'    => $this->userMutationService->userUpdate($dto['userUpdateInputDTO']),
+                        'userCreate'    => $this->userMutationService->userCreate($dto['user']),
+                        'userUpdate'    => $this->userMutationService->userUpdate($dto['id'], $dto['user']),
                         default => null
                     };
                 },

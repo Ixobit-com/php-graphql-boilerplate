@@ -5,34 +5,23 @@ namespace App\Service\GraphQL\User;
 use App\DTO\userCreateInputDTO;
 use App\DTO\userUpdateInputDTO;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\CustomSecurity\Actions;
+use App\Service\CustomSecurity\Roles;
+use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Doctrine\Laminas\Hydrator\Strategy;
 
-
-class UserMutationService
+class UserMutationService extends BaseGraphQLService
 {
-    private UserInterface|null $user;
-
-    private DoctrineHydrator $hydrator;
-
-    public function __construct(
-        private EntityManagerInterface $manager,
-        private Security $security,
-        private UserPasswordHasherInterface $passwordHasher
-    ) {
-        $this->user = $this->security->getUser();
-        $this->hydrator = new DoctrineHydrator($this->manager);
-    }
-
+    #[Actions(Actions::CREATE_USER)]
     public function userCreate(userCreateInputDTO $userCreateInputDTO): User
     {
+        $this->checkAccess(__METHOD__);
+
         $user = new User();
 
-        $this->hydrator->hydrate($userCreateInputDTO->toArray(), $user);
+        $this->DTOService->hydrateEntityFromDTO($userCreateInputDTO, $user);
 
         $user->setPassword($this->passwordHasher->hashPassword($user, $userCreateInputDTO->password));
 
@@ -42,17 +31,36 @@ class UserMutationService
         return $user;
     }
 
-    public function userUpdate(userUpdateInputDTO $userUpdateInputDTO): User
+    #[Actions(Actions::UPDATE_USER)]
+    public function userUpdate(int $id, userUpdateInputDTO $userUpdateInputDTO): User
     {
-        $user = $this->manager->getRepository(User::class)->find($userUpdateInputDTO->id);
+        $this->checkAccess(__METHOD__);
+
+        $user = $this->manager->getRepository(User::class)->find($id);
         if (! $user instanceof User) {
-            throw new EntityNotFoundException("User #{$userUpdateInputDTO->id} not found");
+            throw new EntityNotFoundException("User #{$id} not found");
+        }
+
+        if (
+            !(
+                // Superadmin has full access
+                in_array(Roles::ROLE_SUPERADMIN, $this->security->getUser()->getRoles()) or
+                (
+                    // additional check (is the current user is organization admin and updated user from his organization
+                    in_array(Roles::ROLE_ORGANIZATION_ADMIN, $this->security->getUser()->getRoles()) and false
+                ) or
+                // user update himself
+                $this->security->getUser()->getUserIdentifier() === $user->getUserIdentifier()
+            )
+        ) {
+            throw new AccessDeniedException("User {$this->security->getUser()->getUserIdentifier()} has not access rights to update another user");
         }
 
         if (!empty($userUpdateInputDTO->password)) {
             $userUpdateInputDTO->password = $this->passwordHasher->hashPassword($user, $userUpdateInputDTO->password);
         }
-        $this->hydrator->hydrate($userUpdateInputDTO->toArray(), $user);
+
+        $this->DTOService->hydrateEntityFromDTO($userUpdateInputDTO, $user);
 
         $this->manager->persist($user);
         $this->manager->flush();

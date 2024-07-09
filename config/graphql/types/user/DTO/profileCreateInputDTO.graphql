@@ -1,0 +1,4 @@
+input profileCreateInputDTO {  # PHP Class: App\DTO\profileCreateInputDTO
+    first_name: String!
+    last_name: String!
+}
