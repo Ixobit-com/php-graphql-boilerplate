@@ -9,13 +9,15 @@ use GraphQL\Type\Definition\ResolveInfo;
 use Overblog\GraphQLBundle\Definition\ArgumentInterface;
 use Overblog\GraphQLBundle\Resolver\ResolverMap;
 use App\Service\DTO\DTOService;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class UserResolverMap extends ResolverMap
 {
     public function __construct(
         private readonly UserQueryService $userQueryService,
         private readonly UserMutationService $userMutationService,
-        private readonly DTOService $DTOService
+        private readonly DTOService $DTOService,
+        private readonly RequestStack $requestStack
     ) {}
 
     /**
@@ -52,12 +54,13 @@ class UserResolverMap extends ResolverMap
                     $dto = $this->DTOService->convertGraphQLToDTO($info);
 
                     return match ($info->fieldName) {
-                        'userCreate'    => $this->userMutationService->userCreate($dto['user']),
-                        'userUpdate'    => $this->userMutationService->userUpdate($dto['id'], $dto['user']),
+                        'userCreate'        => $this->userMutationService->userCreate($dto['user']),
+                        'userUpdate'        => $this->userMutationService->userUpdate($dto['id'], $dto['user']),
+                        'userAvatarUpload'  => $this->userMutationService->userAvatarUpload($dto['file'], $this->requestStack->getCurrentRequest()),
                         default => null
                     };
                 },
-            ]
+            ],
         ];
     }
 }

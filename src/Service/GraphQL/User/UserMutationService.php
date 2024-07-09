@@ -2,6 +2,7 @@
 
 namespace App\Service\GraphQL\User;
 
+use App\DTO\avatarUploadInputDTO;
 use App\DTO\userCreateInputDTO;
 use App\DTO\userUpdateInputDTO;
 use App\Entity\User;
@@ -9,6 +10,8 @@ use App\Service\CustomSecurity\Actions;
 use App\Service\CustomSecurity\Roles;
 use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityNotFoundException;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\Laminas\Hydrator\Strategy;
 
@@ -66,6 +69,23 @@ class UserMutationService extends BaseGraphQLService
         $this->manager->flush();
 
         return $user;
+    }
+
+    /**
+     * @deprecated - use REST way for file upload
+     *
+     * @param avatarUploadInputDTO $avatarUploadInputDTO
+     * @param Request $request
+     * @return string
+     */
+    public function userAvatarUpload(avatarUploadInputDTO $avatarUploadInputDTO, Request $request): string
+    {
+
+        $file = $request->files->get($avatarUploadInputDTO->file_name);
+        if ($file instanceof File) {
+            return $file->getFilename();
+        }
+        return 'Ok';
     }
 
 }
