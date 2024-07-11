@@ -2,16 +2,17 @@
 
 namespace App\Service\GraphQL\User;
 
-use App\DTO\paginationInputDTO;
 use App\Entity\User;
-use App\Repository\UserRepository;
-use App\Service\CustomSecurity\Roles;
+use App\GraphQL\DTO\paginationInputDTO;
 use App\Service\CustomSecurity\Actions;
 use App\Service\GraphQL\BaseGraphQLService;
+use Overblog\GraphQLBundle\Annotation as GQL;
 
 
+#[GQL\Type(name: 'UserQuery')]
 class UserQueryService extends BaseGraphQLService
 {
+    #[GQL\Field(type: "User!")]
     #[Actions(Actions::RETRIEVE_USER_INFO)]
     public function user(): ?User
     {

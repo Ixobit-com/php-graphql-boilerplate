@@ -19,6 +19,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+#    App\GraphQL\MyUserQuery:
+#        tags:
+#            - { name: overblog_graphql, schema: user }
+
     App\GraphQL\Resolver\UserResolverMap:
         tags:
             - { name: overblog_graphql.resolver_map, schema: user }

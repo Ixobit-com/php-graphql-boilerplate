@@ -2,10 +2,8 @@
 
 namespace App\Service\DTO;
 
-use App\DTO\BaseDTO;
-use Doctrine\ORM\Mapping\Entity;
+use App\GraphQL\DTO\BaseDTO;
 use GraphQL\Type\Definition\ResolveInfo;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 

@@ -2,17 +2,19 @@
 
 namespace App\Service\GraphQL\User;
 
-use App\DTO\avatarUploadInputDTO;
-use App\DTO\userCreateInputDTO;
-use App\DTO\userUpdateInputDTO;
 use App\Entity\User;
+use App\GraphQL\DTO\avatarUploadInputDTO;
+use App\GraphQL\DTO\userCreateInputDTO;
+use App\GraphQL\DTO\userUpdateInputDTO;
 use App\Service\CustomSecurity\Actions;
 use App\Service\CustomSecurity\Roles;
 use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityNotFoundException;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Overblog\GraphQLBundle\Annotation as GQL;
 
 class UserMutationService extends BaseGraphQLService
 {
@@ -32,6 +34,7 @@ class UserMutationService extends BaseGraphQLService
 
         return $user;
     }
+
 
     #[Actions(Actions::UPDATE_USER)]
     public function userUpdate(int $id, userUpdateInputDTO $userUpdateInputDTO): User

@@ -17,13 +17,14 @@ overblog_graphql:
                 - 'Symfony\Component\Validator\Exception\ValidationFailedException'
                 - 'Doctrine\ORM\EntityNotFoundException'
     definitions:
+        use_classloader_listener: false
+        auto_compile: true
         schema:
             user:
                 query: UserQuery
-                mutation: UserMutation
+#                mutation: UserMutation
         mappings:
             types:
-                -
-                    type: graphql
-                    dir: "%kernel.project_dir%/config/graphql"
-                    suffix: null
+                - type: attribute
+                  dir: "%kernel.project_dir%/src"
+                  suffix: ~
