@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Doctrine\Laminas\Hydrator\Strategy;
 
 class UserMutationService extends BaseGraphQLService
 {

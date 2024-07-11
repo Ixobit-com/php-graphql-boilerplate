@@ -1,0 +1,43 @@
+spectaql:
+  logoFile: ./public/documentation/logo.png
+  faviconFile: ./public/documentation/logo.png
+  displayAllServers: true
+  targetDir: ./public/documentation
+
+
+introspection:
+  removeTrailingPeriodFromDescriptions: false
+  schemaFile: ./var/schema.gql
+#  metadataFile: ./doc/metadata.json
+#  dynamicExamplesProcessingModule: ./examples/customizations/examples
+  queryNameStrategy: capitalizeFirst
+  fieldExpansionDepth: 2
+
+  spectaqlDirective:
+    enable: true
+
+extensions:
+  graphqlScalarExamples: true
+
+info:
+  title: BigELD GraphQL API Reference
+  description: Welcome to the API Documentation!
+#  termsOfService: https://www.example.com/terms
+#  contact:
+#    name: API Support
+#    url: http://www.example.com/support
+#    email: support@example.com
+#  license:
+#    name: Apache 2.0
+#    url: https://www.apache.org/licenses/LICENSE-2.0.html
+#  x-introItems:
+#    - title: Important thing 1
+#      description: Some important stuff we wanted you to know. Supports `markdown`
+
+servers:
+  - url: https://nginx/graphql
+    production: true
+    headers:
+      - name: Set-Cookie
+        example: PHPSESSID=<cookie here>; Path=/; Secure; HttpOnly;
+        comment: Cookie based authorisation

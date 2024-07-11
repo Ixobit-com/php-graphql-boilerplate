@@ -11,8 +11,8 @@
 * Схема АПИ разбита на несколько логических частей (пока есть только user) и в дальнейшем будет расширяться.
   Таким образом каждая часть имеет отдельную логическую точку входа.
   Роутинг для АПИ при этом получается: `/api/graphql/<schema>` (например `/api/graphql/user`)
-
-* Queries и Mutations расположены в `/config/graphql/<schema>` (напр. `/config/graphql/user`)
+* **Resolvers** конфигурируются в services.yaml (см. `App\GraphQL\Resolver\UserResolverMap` для схемы "user") 
+* Queries и Mutations расположены в `/config/graphql/<schema>` (напр. `/config/graphql/user/user.mutations.graphql`)
 * Типы и т.п. - расположены в `/config/graphql/types`
 * Общие типы в `common`. Типы, относящиеся к конкретной части схемы - в отдельных папках.
 * Input types лежат в папках "DTO" в соответствующих местах.

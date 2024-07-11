@@ -1,4 +1,21 @@
 overblog_graphql:
+    security:
+        enable_introspection: '%kernel.debug%'
+    errors_handler:
+        #...
+        # change to true to try to map an exception to a parent exception if the exact exception is not in
+        # the mapping
+        map_exceptions_to_parent: false
+        internal_error_message: 'Internal GraphQL error occurred'
+        exceptions:
+#            warnings:
+            errors:
+                - 'Symfony\Component\Security\Core\Exception\AccessDeniedException'
+                - '\InvalidArgumentException'
+                - '\LogicException'
+                - 'Symfony\Component\Security\Core\Exception\UnsupportedUserException'
+                - 'Symfony\Component\Validator\Exception\ValidationFailedException'
+                - 'Doctrine\ORM\EntityNotFoundException'
     definitions:
         schema:
             user:
