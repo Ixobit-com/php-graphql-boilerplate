@@ -1,7 +1,8 @@
 <?php
 
-namespace App\GraphQL\DTO;
+namespace App\GraphQL\DTO\Input;
 
+use App\GraphQL\DTO\BaseDTO;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class userUpdateInputDTO extends BaseDTO

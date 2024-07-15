@@ -1,5 +1,0 @@
-input userCreateInputDTO {  # PHP Class: App\DTO\userCreateInputDTO
-    email: String!
-    password: String!
-    profile: profileCreateInputDTO!
-}

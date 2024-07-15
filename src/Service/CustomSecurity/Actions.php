@@ -2,6 +2,7 @@
 
 namespace App\Service\CustomSecurity;
 
+use App\GraphQL\DTO\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[\Attribute] class Actions
@@ -10,31 +11,31 @@ use Symfony\Component\Security\Core\User\UserInterface;
     // @TODO move to database
     const RETRIEVE_USERS_LIST   = "RETRIEVE_USERS_LIST";
     const RETRIEVE_USER_INFO    = "RETRIEVE_USER_INFO";
-    const CREATE_USER           = "CREATE_USER";
-    const UPDATE_USER           = "UPDATE_USER";
+    const USER_CREATE           = "USER_CREATE";
+    const USER_UPDATE           = "USER_UPDATE";
 
     // Roles to Actions
     // @TODO move to database
     static array $actions = [
-        Roles::ROLE_SUPERADMIN => [
+        Role::ROLE_SUPERADMIN => [
             // Have access for all actions
         ],
-        Roles::ROLE_ORGANIZATION_ADMIN => [
+        Role::ROLE_ORGANIZATION_ADMIN => [
             self::RETRIEVE_USERS_LIST,
-            self::CREATE_USER
+            self::USER_CREATE
         ],
-        Roles::ROLE_USER => [
-            self::UPDATE_USER,
+        Role::ROLE_USER => [
+            self::USER_UPDATE,
             self::RETRIEVE_USER_INFO
         ],
-        Roles::ROLE_DRIVER => []
+        Role::ROLE_DRIVER => []
     ];
 
     static function check(UserInterface $user, string $method): bool
     {
         $actions = [];
         foreach ($user->getRoles() as $role) {
-            if ($role === Roles::ROLE_SUPERADMIN) return true; // ROLE_SUPERADMIN have access for all actions
+            if ($role === Role::ROLE_SUPERADMIN) return true; // ROLE_SUPERADMIN have access for all actions
             $actions = array_merge($actions, self::$actions[$role]);
         }
         $actions = array_unique($actions);

@@ -1,6 +1,0 @@
-type UserMutation {
-    userCreate(user: userCreateInputDTO!): User!
-    userUpdate(id: ID!, user: userUpdateInputDTO!): User!
-    userAvatarUpload(file: avatarUploadInputDTO!): String! @deprecated
-    userPromote(id: ID!, roles: [Role]!): Role!
-}

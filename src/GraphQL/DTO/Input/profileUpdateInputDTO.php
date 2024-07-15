@@ -1,6 +1,8 @@
 <?php
 
-namespace App\GraphQL\DTO;
+namespace App\GraphQL\DTO\Input;
+
+use App\GraphQL\DTO\BaseDTO;
 
 class profileUpdateInputDTO extends BaseDTO
 {

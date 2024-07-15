@@ -3,40 +3,51 @@
 namespace App\Service\GraphQL\User;
 
 use App\Entity\User;
-use App\GraphQL\DTO\avatarUploadInputDTO;
-use App\GraphQL\DTO\userCreateInputDTO;
-use App\GraphQL\DTO\userUpdateInputDTO;
+use App\GraphQL\DTO\Input\avatarUploadInputDTO;
+use App\GraphQL\DTO\Input\userCreateInputDTO;
+use App\GraphQL\DTO\Input\userUpdateInputDTO;
 use App\Service\CustomSecurity\Actions;
 use App\Service\CustomSecurity\Roles;
 use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityNotFoundException;
-use phpDocumentor\Reflection\Types\Integer;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
+
+#[Autoconfigure(public: true)]
+#[GQL\Type(name: 'UserMutation')]
 class UserMutationService extends BaseGraphQLService
 {
-    #[Actions(Actions::CREATE_USER)]
-    public function userCreate(userCreateInputDTO $userCreateInputDTO): User
+    /**
+     * @param userCreateInputDTO $user
+     * @return User
+     * @throws \ReflectionException
+     */
+    #[Actions(Actions::USER_CREATE)]
+    #[GQL\Mutation]
+    #[GQL\Arg(name: "user", type: "userCreateInputDTO")]
+    public function userCreate(userCreateInputDTO $user): User
     {
         $this->checkAccess(__METHOD__);
 
-        $user = new User();
+        $newUser = new User();
 
-        $this->DTOService->hydrateEntityFromDTO($userCreateInputDTO, $user);
+        $this->DTOService->hydrateEntityFromDTO($user, $newUser);
 
-        $user->setPassword($this->passwordHasher->hashPassword($user, $userCreateInputDTO->password));
-
-        $this->manager->persist($user);
+        if (isset($user->password)) {
+            $newUser->setPassword($this->passwordHasher->hashPassword($newUser, $user->password));
+        }
+        $this->manager->persist($newUser);
         $this->manager->flush();
 
-        return $user;
+        return $newUser;
     }
 
 
-    #[Actions(Actions::UPDATE_USER)]
+    #[Actions(Actions::USER_UPDATE)]
     public function userUpdate(int $id, userUpdateInputDTO $userUpdateInputDTO): User
     {
         $this->checkAccess(__METHOD__);
@@ -71,23 +82,6 @@ class UserMutationService extends BaseGraphQLService
         $this->manager->flush();
 
         return $user;
-    }
-
-    /**
-     * @deprecated - use REST way for file upload
-     *
-     * @param avatarUploadInputDTO $avatarUploadInputDTO
-     * @param Request $request
-     * @return string
-     */
-    public function userAvatarUpload(avatarUploadInputDTO $avatarUploadInputDTO, Request $request): string
-    {
-
-        $file = $request->files->get($avatarUploadInputDTO->file_name);
-        if ($file instanceof File) {
-            return $file->getFilename();
-        }
-        return 'Ok';
     }
 
 }

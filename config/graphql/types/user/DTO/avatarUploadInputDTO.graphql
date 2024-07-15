@@ -1,3 +1,0 @@
-input avatarUploadInputDTO {
-    file_name: String!
-}

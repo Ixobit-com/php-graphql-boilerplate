@@ -44,3 +44,7 @@
 * Логика проверок пока реализована в классе **Actions**. Соответствие между функционалом и ролями пользователей описано массивами.
   _В дальнейшем это надо будет перенести в базу данных для реализации кастомных ролей_.
 * И дополнительные проверки непосредственно в методах сервисов.
+
+## Links
+https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/attributes-reference.md \
+https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/index.md

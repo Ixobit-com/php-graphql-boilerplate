@@ -4,6 +4,7 @@ namespace App\Service\DTO;
 
 use App\GraphQL\DTO\BaseDTO;
 use GraphQL\Type\Definition\ResolveInfo;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -97,37 +98,77 @@ class DTOService
         return trim($className, '! ');
     }
 
+    /**
+     * Hydrate Entity object from DTO Object
+     *  - DTO properties must be named exactly as Entity properties
+     * @example
+     * DTO property: public profileCreateInputDTO $profile;
+     * Entity property: private ?Profile $profile = null;
+     *
+     * @param BaseDTO $dto
+     * @param object $entity
+     * @return object
+     * @throws \ReflectionException
+     */
     public function hydrateEntityFromDTO(BaseDTO $dto, object $entity): object
     {
-        $refDTO = new \ReflectionClass($dto::class);
+
+        $refDTO     = new \ReflectionClass($dto::class);
+        $refEntity  = new \ReflectionClass($entity);
+
         foreach ($refDTO->getProperties() as $property) {
             $property_name = $property->getName();
-            if (isset($dto->$property_name)) {
+            if (isset($dto->$property_name)) { // DTO Object have value for this property (if empty - property will not change)
                 $normalized_property_name = $this->nameNormalize($property_name);
+
+                // Getters\Setters to Doctrine style: setPropertyName, getPropertyName
                 $setter_name = 'set' . $normalized_property_name;
                 $getter_name = 'get' . $normalized_property_name;
 
+                // Check getter, setter exists
                 if (!method_exists($entity, $setter_name) or !method_exists($entity, $getter_name)) {
                     throw new \LogicException("Entity '".$entity::class."' has not method '$setter_name' or '$getter_name'");
                 }
 
-                if ($property->getType()->isBuiltin()) {
-                    $value = $dto->$property_name;
+                $value = $dto->$property_name; // get incoming property value
+
+                if ($property->getType()->isBuiltin()) { // If DTO Property is scalar - set entity property by setter
                     $entity->$setter_name($value);
-                } else {
-                    $value = $dto->$property_name;
-                    if ($value instanceof BaseDTO) {
-                        $entity_from_object = $entity->$getter_name();
-                        $entity->$setter_name($this->hydrateEntityFromDTO($value, $entity_from_object));
-                    } else {
-                        throw new \LogicException("Unexpected entity class '".$entity_from_object::class."'; '$normalized_property_name' expected");
+                } else { // If DTO Property is another Type (i.e. custom type) - try to set it by recursion
+                    $entity_from_object = $entity->$getter_name();
+
+                    if (!$value instanceof BaseDTO) {
+                        throw new \LogicException("Unexpected entity class '" . $entity_from_object::class . "'; '$normalized_property_name' expected");
                     }
+
+                    $entity_property_type = $refEntity->getProperty($property_name)->getType()->getName();
+                    if (!class_exists($entity_property_type)) {
+                        throw new \LogicException("Entity property '$property_name' try to update as undefined class '$entity_property_type'");
+                    }
+
+                    if (is_null($entity_from_object)) {
+                        $entity_from_object = new $entity_property_type; // Create new Entity for property, if not exists (i.e. for new Entity)
+                    } elseif (is_object($entity_from_object)) {
+                        if (!$entity_from_object instanceof $entity_property_type) {
+                            throw new \LogicException("Entity property '$property_name' return '".gettype($entity_from_object)."'; ".$entity_property_type." expected");
+                        }
+                    }
+
+                    $entity->$setter_name($this->hydrateEntityFromDTO($value, $entity_from_object));
                 }
             }
         }
         return $entity;
     }
 
+    /**
+     * Normalize property name
+     *  - from underscore to CamelCase
+     *  - First letter to uppercase
+     *
+     * @param string $name
+     * @return string
+     */
     private function nameNormalize(string $name): string
     {
         $substrings = explode('_', $name);

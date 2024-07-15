@@ -10,19 +10,20 @@ overblog_graphql:
         exceptions:
 #            warnings:
             errors:
+                - 'InvalidArgumentException'
+                - 'LogicException'
+                - 'ReflectionException'
                 - 'Symfony\Component\Security\Core\Exception\AccessDeniedException'
-                - '\InvalidArgumentException'
-                - '\LogicException'
                 - 'Symfony\Component\Security\Core\Exception\UnsupportedUserException'
                 - 'Symfony\Component\Validator\Exception\ValidationFailedException'
                 - 'Doctrine\ORM\EntityNotFoundException'
     definitions:
-        use_classloader_listener: false
+        use_classloader_listener: true
         auto_compile: true
         schema:
             user:
                 query: UserQuery
-#                mutation: UserMutation
+                mutation: UserMutation
         mappings:
             types:
                 - type: attribute

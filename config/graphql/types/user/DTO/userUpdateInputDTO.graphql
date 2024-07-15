@@ -1,5 +1,0 @@
-input userUpdateInputDTO {  # PHP Class: App\DTO\userUpdateInputDTO
-    email: String
-    password: String
-    profile: profileUpdateInputDTO
-}

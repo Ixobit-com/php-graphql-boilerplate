@@ -3,12 +3,13 @@
 namespace App\Service\GraphQL\User;
 
 use App\Entity\User;
-use App\GraphQL\DTO\paginationInputDTO;
+use App\GraphQL\DTO\Input\paginationInputDTO;
 use App\Service\CustomSecurity\Actions;
 use App\Service\GraphQL\BaseGraphQLService;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-
+#[Autoconfigure(public: true)]
 #[GQL\Type(name: 'UserQuery')]
 class UserQueryService extends BaseGraphQLService
 {
@@ -21,6 +22,8 @@ class UserQueryService extends BaseGraphQLService
     }
 
     #[Actions(Actions::RETRIEVE_USERS_LIST)]
+    #[GQL\Field(type: "[User]")]
+    #[GQL\Arg(name: "pagination", type: "paginationInputDTO")]
     public function users(paginationInputDTO $pagination): array
     {
         $this->checkAccess(__METHOD__);

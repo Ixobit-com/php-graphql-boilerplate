@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\ProfileRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Overblog\GraphQLBundle\Annotation as GQL;
 
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
+#[GQL\Type]
 class Profile
 {
     #[ORM\Id]
@@ -14,9 +16,11 @@ class Profile
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[GQL\Field]
     private ?string $first_name = null;
 
     #[ORM\Column(length: 255)]
+    #[GQL\Field]
     private ?string $last_name = null;
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]

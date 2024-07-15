@@ -19,13 +19,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-#    App\GraphQL\MyUserQuery:
+#
+#    App\GraphQL\Resolver\UserResolverMap:
 #        tags:
-#            - { name: overblog_graphql, schema: user }
-
-    App\GraphQL\Resolver\UserResolverMap:
-        tags:
-            - { name: overblog_graphql.resolver_map, schema: user }
+#            - { name: overblog_graphql.resolver_map, schema: user }
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

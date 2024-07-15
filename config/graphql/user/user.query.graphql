@@ -1,4 +1,0 @@
-type UserQuery {
-    user: User # get current logged in user
-    users(pagination: paginationInputDTO): [User] # get paginated users list
-}

@@ -9,6 +9,6 @@ txtrst=$(tput sgr0)       # Text reset
 source .env
 
 docker compose run php-fpm ./bin/console graphql:dump-schema --schema=user --classic --format=graphql --file=./var/schema.gql
-docker compose run nodejs npx spectaql ./config/graphql/spectacul_config.yml
+docker compose run nodejs npx spectaql ./config/packages/spectacul_config.yml
 
 exit 0;
