@@ -13,6 +13,7 @@ overblog_graphql:
                 - 'InvalidArgumentException'
                 - 'LogicException'
                 - 'ReflectionException'
+                - 'AuthenticationException'
                 - 'Symfony\Component\Security\Core\Exception\AccessDeniedException'
                 - 'Symfony\Component\Security\Core\Exception\UnsupportedUserException'
                 - 'Symfony\Component\Validator\Exception\ValidationFailedException'
@@ -21,6 +22,8 @@ overblog_graphql:
         use_classloader_listener: true
         auto_compile: true
         schema:
+            auth:
+                query: AuthQuery
             user:
                 query: UserQuery
                 mutation: UserMutation

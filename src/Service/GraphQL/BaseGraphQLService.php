@@ -3,7 +3,6 @@
 namespace App\Service\GraphQL;
 
 use App\Service\CustomSecurity\Actions;
-use App\Service\CustomSecurity\Roles;
 use App\Service\DTO\DTOService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;

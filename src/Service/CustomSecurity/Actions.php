@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 {
     // Actions
     // @TODO move to database
+    const AUTH = "AUTH";
     const RETRIEVE_USERS_LIST   = "RETRIEVE_USERS_LIST";
     const RETRIEVE_USER_INFO    = "RETRIEVE_USER_INFO";
     const USER_CREATE           = "USER_CREATE";

@@ -3,16 +3,19 @@
 namespace App\Service\GraphQL\User;
 
 use App\Entity\User;
+use App\GraphQL\DTO\Input\authInputDTO;
 use App\GraphQL\DTO\Input\paginationInputDTO;
 use App\Service\CustomSecurity\Actions;
 use App\Service\GraphQL\BaseGraphQLService;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'UserQuery')]
 class UserQueryService extends BaseGraphQLService
 {
+
     #[GQL\Field(type: "User!")]
     #[Actions(Actions::RETRIEVE_USER_INFO)]
     public function user(): ?User
