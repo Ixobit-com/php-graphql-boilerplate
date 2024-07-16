@@ -5,6 +5,8 @@ namespace App\Service\GraphQL;
 use App\Service\CustomSecurity\Actions;
 use App\Service\DTO\DTOService;
 use Doctrine\ORM\EntityManagerInterface;
+use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -16,7 +18,9 @@ class BaseGraphQLService
         protected readonly EntityManagerInterface   $manager,
         protected readonly Security                 $security,
         protected UserPasswordHasherInterface       $passwordHasher,
-        protected DTOService                        $DTOService
+        protected DTOService                        $DTOService,
+        protected JWTTokenManagerInterface          $JWTManager,
+        protected RefreshTokenGeneratorInterface    $refreshTokenGenerator,
     ) {}
 
     /**
