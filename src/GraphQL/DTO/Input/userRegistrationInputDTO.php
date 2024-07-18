@@ -7,8 +7,8 @@ use App\GraphQL\DTO\Role;
 use Symfony\Component\Validator\Constraints as Assert;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
-#[GQL\Input(name: "userCreateInputDTO")]
-class userCreateInputDTO extends BaseDTO
+#[GQL\Input(name: "userRegistrationInputDTO")]
+class userRegistrationInputDTO extends BaseDTO
 {
 
     #[GQL\InputField(type: "String")]

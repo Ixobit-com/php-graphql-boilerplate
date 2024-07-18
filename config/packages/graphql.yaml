@@ -9,6 +9,7 @@ overblog_graphql:
         internal_error_message: 'Internal GraphQL error occurred'
         exceptions:
 #            warnings:
+            # move exception message to high level GraphQL output
             errors:
                 - 'InvalidArgumentException'
                 - 'LogicException'
@@ -24,6 +25,7 @@ overblog_graphql:
         schema:
             auth:
                 query: AuthQuery
+                mutation: AuthMutation
             user:
                 query: UserQuery
                 mutation: UserMutation

@@ -3,36 +3,31 @@
 namespace App\Service\GraphQL\User;
 
 use App\Entity\User;
-use App\GraphQL\DTO\Input\authInputDTO;
 use App\GraphQL\DTO\Input\paginationInputDTO;
-use App\Service\CustomSecurity\Actions;
 use App\Service\GraphQL\BaseGraphQLService;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'UserQuery')]
+#[GQL\Access("isFullyAuthenticated()")]
 class UserQueryService extends BaseGraphQLService
 {
 
     #[GQL\Field(type: "User!")]
-    #[Actions(Actions::RETRIEVE_USER_INFO)]
+    #[GQL\Access("isGranted('RETRIEVE_USER_INFO')")]
     public function user(): ?User
     {
-        $this->checkAccess(__METHOD__);
-        return $this->manager->getRepository(User::class)->findOneBy(['email' => $this->security->getUser()->getUserIdentifier()]);
+        return $this->entityManager->getRepository(User::class)->findOneBy(['email' => $this->security->getUser()->getUserIdentifier()]);
     }
 
-    #[Actions(Actions::RETRIEVE_USERS_LIST)]
     #[GQL\Field(type: "[User]")]
     #[GQL\Arg(name: "pagination", type: "paginationInputDTO")]
+    #[GQL\Access("isGranted('RETRIEVE_USERS_LIST')")]
     public function users(paginationInputDTO $pagination): array
     {
-        $this->checkAccess(__METHOD__);
-        // Limit users for current organization only
-
-        return $this->manager->getRepository(User::class)->findBy([], [], $pagination->limit, $pagination->offset);
+        // @TODO Limit users for current organization only
+        return $this->entityManager->getRepository(User::class)->findBy([], [], $pagination->limit, $pagination->offset);
     }
 
 }

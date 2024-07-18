@@ -2,12 +2,12 @@ spectaql:
   logoFile: ./public/documentation/logo.png
   faviconFile: ./public/documentation/logo.png
   displayAllServers: true
-  targetDir: ./public/documentation
+#  targetDir: ./public/documentation
 
 
 introspection:
   removeTrailingPeriodFromDescriptions: false
-  schemaFile: ./var/schema.gql
+#  schemaFile:
 #  metadataFile: ./doc/metadata.json
 #  dynamicExamplesProcessingModule: ./examples/customizations/examples
   queryNameStrategy: capitalizeFirst
@@ -35,9 +35,5 @@ info:
 #      description: Some important stuff we wanted you to know. Supports `markdown`
 
 servers:
-  - url: https://nginx/graphql
+  - url: https://graphql.local/
     production: true
-    headers:
-      - name: Set-Cookie
-        example: PHPSESSID=<cookie here>; Path=/; Secure; HttpOnly;
-        comment: Cookie based authorisation
