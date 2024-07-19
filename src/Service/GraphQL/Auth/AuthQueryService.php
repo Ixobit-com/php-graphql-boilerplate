@@ -11,6 +11,7 @@ use App\GraphQL\DTO\output\refreshResponseDTO;
 use App\Service\GraphQL\BaseGraphQLService;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
 use Gesdinet\JWTRefreshTokenBundle\Security\Exception\InvalidTokenException;
+use Monolog\Attribute\WithMonologChannel;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -19,6 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'AuthQuery')]
 #[GQL\Access("hasRole('PUBLIC_ACCESS')")]
+#[WithMonologChannel('security')]
 class AuthQueryService extends BaseGraphQLService
 {
 
@@ -45,6 +47,9 @@ class AuthQueryService extends BaseGraphQLService
         $response->refresh_token    = $refreshToken->getRefreshToken();
         $response->user             = $user;
         $response->token            = $token;
+
+
+        $this->logger->info("Provided new JWT token for user '{$user->getUserIdentifier()}'");
 
         return $response;
     }
