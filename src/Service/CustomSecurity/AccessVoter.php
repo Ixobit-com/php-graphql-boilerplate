@@ -5,10 +5,15 @@ namespace App\Service\CustomSecurity;
 use App\GraphQL\DTO\Role;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccessVoter extends Voter
 {
+
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy
+    ) {}
 
     /**
      * @inheritDoc
@@ -21,18 +26,19 @@ class AccessVoter extends Voter
     /**
      * @inheritDoc
      */
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $requested_action, mixed $subject, TokenInterface $token): bool
     {
         /** @var UserInterface $user */
         $user = $token->getUser();
+        $roles = $this->roleHierarchy->getReachableRoleNames($user->getRoles()); // Get all roles by hierarchy
 
-        $actions = [];
-        foreach ($user->getRoles() as $role) {
+        $allowed_actions = [];
+        foreach ($roles as $role) {
             if ($role === Role::ROLE_SUPERADMIN) return true; // ROLE_SUPERADMIN have access for all actions
-            $actions = array_merge($actions, Actions::$actions[$role]);
+            $allowed_actions = array_merge($allowed_actions, Actions::$actions[$role]);
         }
-        $actions = array_unique($actions);
+        $allowed_actions = array_unique($allowed_actions);
 
-        return in_array($attribute, $actions);
+        return in_array($requested_action, $allowed_actions);
     }
 }

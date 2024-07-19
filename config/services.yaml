@@ -26,6 +26,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
 
+# Add custom voter for checkin access rights in GraphQL services (i.e. #[GQL\Access("isGranted('RETRIEVE_USERS_LIST')")])
     App\Service\CustomSecurity\AccessVoter:
         tags:
             - { name: security.voter }

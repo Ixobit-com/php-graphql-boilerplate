@@ -25,9 +25,12 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+    role_hierarchy:
+        ROLE_DRIVER:                ROLE_USER
+        ROLE_ORGANIZATION_ADMIN:    ROLE_USER
+        ROLE_SUPERADMIN:            [ROLE_ORGANIZATION_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    # Access control implemented in GraphQl services (using attributes like #[GQL\Access(...)")]
     access_control:
 #        - { path: ^/api/graphql/auth, roles: PUBLIC_ACCESS}
 #        - { path: ^/api, roles: ROLE_USER }
