@@ -10,8 +10,7 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 class userUpdateInputDTO extends BaseDTO
 {
     #[GQL\InputField(type: "String")]
-    #[Assert\Email]
-    public ?string $email;
+    public ?string $login;
 
     #[GQL\InputField(type: "String")]
     public ?string $password;

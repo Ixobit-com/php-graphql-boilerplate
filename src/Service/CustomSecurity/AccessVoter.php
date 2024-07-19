@@ -2,7 +2,7 @@
 
 namespace App\Service\CustomSecurity;
 
-use App\GraphQL\DTO\Role;
+use App\GraphQL\DTO\Role\FullRole;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
@@ -34,7 +34,7 @@ class AccessVoter extends Voter
 
         $allowed_actions = [];
         foreach ($roles as $role) {
-            if ($role === Role::ROLE_SUPERADMIN) return true; // ROLE_SUPERADMIN have access for all actions
+            if ($role === FullRole::ROLE_SUPERADMIN) return true; // ROLE_SUPERADMIN have access for all actions
             $allowed_actions = array_merge($allowed_actions, Actions::$actions[$role]);
         }
         $allowed_actions = array_unique($allowed_actions);

@@ -3,14 +3,14 @@
 namespace App\DataFixtures;
 
 use App\Entity\Profile;
-use App\GraphQL\DTO\Role;
+use App\Entity\User;
+use App\GraphQL\DTO\Role\BaseRole;
+use App\GraphQL\DTO\Role\ExtendedRole;
+use App\GraphQL\DTO\Role\FullRole;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\User;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
 use Faker\Generator;
-use PhpParser\Node\Expr\Array_;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
@@ -19,7 +19,7 @@ class UserFixtures extends Fixture
 
     private string $passwordHash;
 
-    private static array $roles = [Role::ROLE_SUPERADMIN, Role::ROLE_ORGANIZATION_ADMIN, Role::ROLE_DRIVER];
+    private static array $roles = [ExtendedRole::ROLE_ORGANIZATION_ADMIN, BaseRole::ROLE_DRIVER];
 
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
@@ -37,8 +37,8 @@ class UserFixtures extends Fixture
         }
 
         $orgadmin = (new User())
-                ->setEmail("admin@example.com")
-        ->setRoles([Role::ROLE_ORGANIZATION_ADMIN])
+                ->setLogin("admin")
+        ->setRoles([ExtendedRole::ROLE_ORGANIZATION_ADMIN])
         ->setProfile(
             (new Profile())
                 ->setFirstName("Admin")
@@ -47,8 +47,8 @@ class UserFixtures extends Fixture
         $manager->persist($orgadmin);
 
         $superadmin = (new User())
-            ->setEmail("superadmin@example.com")
-            ->setRoles([Role::ROLE_SUPERADMIN])
+            ->setLogin("superadmin")
+            ->setRoles([FullRole::ROLE_SUPERADMIN])
             ->setProfile(
                 (new Profile())
                     ->setFirstName("Super")
@@ -62,7 +62,7 @@ class UserFixtures extends Fixture
     private function getFakeUser(): User
     {
         $user = (new User())
-            ->setEmail($this->faker->email())
+            ->setLogin($this->faker->userName())
             ->setRoles([self::$roles[array_rand(self::$roles)]])
             ->setProfile(
                 (new Profile())

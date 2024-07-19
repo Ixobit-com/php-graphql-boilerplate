@@ -2,8 +2,8 @@
 
 namespace App\Service\CustomSecurity;
 
-use App\GraphQL\DTO\Role;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\GraphQL\DTO\Role\BaseRole;
+use App\GraphQL\DTO\Role\FullRole;
 
 class Actions
 {
@@ -17,17 +17,17 @@ class Actions
     // Roles to Actions
     // @TODO move to database
     static array $actions = [
-        Role::ROLE_SUPERADMIN => [
+        FullRole::ROLE_SUPERADMIN => [
             // Have access for all actions
         ],
-        Role::ROLE_ORGANIZATION_ADMIN => [
+        FullRole::ROLE_ORGANIZATION_ADMIN => [
             self::RETRIEVE_USERS_LIST,
         ],
-        Role::ROLE_USER => [
+        FullRole::ROLE_USER => [
             self::USER_UPDATE,
             self::RETRIEVE_USER_INFO
         ],
-        Role::ROLE_DRIVER => []
+        FullRole::ROLE_DRIVER => []
     ];
 
 }

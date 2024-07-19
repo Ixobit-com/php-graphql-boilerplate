@@ -3,18 +3,18 @@
 namespace App\GraphQL\DTO\Input;
 
 use App\GraphQL\DTO\BaseDTO;
-use App\GraphQL\DTO\Role;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\GraphQL\DTO\Role\BaseRole;
+use App\GraphQL\DTO\Role\ExtendedRole;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[GQL\Input(name: "userRegistrationInputDTO")]
 class userRegistrationInputDTO extends BaseDTO
 {
 
     #[GQL\InputField(type: "String")]
-    #[Assert\Email]
     #[Assert\NotBlank]
-    public string $email;
+    public string $login;
 
     #[GQL\InputField(type: "String")]
     #[Assert\NotBlank]
@@ -37,7 +37,7 @@ class userRegistrationInputDTO extends BaseDTO
      */
     public function getRoles():array
     {
-        $reflection = new \ReflectionClass(Role::class);
+        $reflection = new \ReflectionClass(ExtendedRole::class); // All roles except ROLE_SUPERADMIN allowed for registration
         return array_keys($reflection->getConstants());
     }
 }

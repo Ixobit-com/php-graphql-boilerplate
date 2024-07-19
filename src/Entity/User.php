@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_LOGIN', fields: ['login'])]
 #[GQL\Type]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -21,7 +21,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[GQL\Field]
-    private ?string $email = null;
+    private ?string $login = null;
 
     /**
      * @var list<string> The user roles
@@ -45,14 +45,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getLogin(): ?string
     {
-        return $this->email;
+        return $this->login;
     }
 
-    public function setEmail(string $email): static
+    public function setLogin(string $login): static
     {
-        $this->email = $email;
+        $this->login = $login;
 
         return $this;
     }
@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->login;
     }
 
     /**

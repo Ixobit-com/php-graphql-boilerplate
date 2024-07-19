@@ -28,12 +28,14 @@ class AuthQueryService extends BaseGraphQLService
     #[GQL\Arg(name: "loginInfo", type: "loginInputDTO")]
     public function login(loginInputDTO $loginInfo): ?loginResponseDTO
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $loginInfo->email]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['login' => $loginInfo->login]);
         if (!$user instanceof UserInterface) {
-            throw new AuthenticationException("User {$loginInfo->email} not found");
+            $this->logger->error("User {$loginInfo->login} not found");
+            throw new AuthenticationException("User '{$loginInfo->login}' not found");
         }
 
         if (!$this->passwordHasher->isPasswordValid($user, $loginInfo->password)) {
+            $this->logger->error("User '{$user->getUserIdentifier()}' provide invalid password: '{$loginInfo->password}'");
             throw new AuthenticationException('Invalid credentials');
         }
 
@@ -47,7 +49,6 @@ class AuthQueryService extends BaseGraphQLService
         $response->refresh_token    = $refreshToken->getRefreshToken();
         $response->user             = $user;
         $response->token            = $token;
-
 
         $this->logger->info("Provided new JWT token for user '{$user->getUserIdentifier()}'");
 
@@ -63,7 +64,7 @@ class AuthQueryService extends BaseGraphQLService
 
         if ($refreshToken && $refreshToken->isValid()) {
 
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $refreshToken->getUsername()]);
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['login' => $refreshToken->getUsername()]);
             if (!$user instanceof UserInterface) {
                 throw new AuthenticationException("User {$refreshToken->getUsername()} not found");
             }
