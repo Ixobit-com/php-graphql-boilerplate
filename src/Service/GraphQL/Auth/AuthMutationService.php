@@ -35,6 +35,13 @@ class AuthMutationService extends BaseGraphQLService
         $this->entityManager->persist($newUser);
         $this->entityManager->flush();
 
+        $this->logger->info(
+            sprintf(
+                "New user is registered: '%s'",
+                $newUser->getUserIdentifier()
+            )
+        );
+
         return $newUser;
     }
 

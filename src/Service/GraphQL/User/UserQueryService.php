@@ -16,6 +16,7 @@ class UserQueryService extends BaseGraphQLService
 
     #[GQL\Field(type: "User!")]
     #[GQL\Access("isGranted('RETRIEVE_USER_INFO')")]
+    #[GQL\Description('Get authenticated user info')]
     public function user(): ?User
     {
         return $this->entityManager->getRepository(User::class)->findOneBy(['login' => $this->security->getUser()->getUserIdentifier()]);

@@ -50,7 +50,12 @@ class AuthQueryService extends BaseGraphQLService
         $response->user             = $user;
         $response->token            = $token;
 
-        $this->logger->info("Provided new JWT token for user '{$user->getUserIdentifier()}'");
+        $this->logger->info(
+            sprintf(
+                "Provided new JWT token for user '%s'",
+                $user->getUserIdentifier()
+            )
+        );
 
         return $response;
     }
@@ -62,23 +67,55 @@ class AuthQueryService extends BaseGraphQLService
 
         $refreshToken = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(['refreshToken' => $refreshInfo->refresh_token]);
 
-        if ($refreshToken && $refreshToken->isValid()) {
+        if (!$refreshToken instanceof RefreshToken) {
+            $this->logger->error(
+                sprintf(
+                    "Provided refresh token is not exists: '%s'",
+                    $refreshInfo->refresh_token
+                )
+            );
+            throw new InvalidTokenException('Invalid refresh token');
+        }
+
+        if ($refreshToken->isValid()) {
 
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['login' => $refreshToken->getUsername()]);
             if (!$user instanceof UserInterface) {
-                throw new AuthenticationException("User {$refreshToken->getUsername()} not found");
+                $this->logger->error(
+                    sprintf(
+                        "User '%s' for refresh token '%s' is not found",
+                        $refreshToken->getUsername(),
+                        $refreshInfo->refresh_token
+                    )
+                );
+                throw new AuthenticationException("User for this refresh token is not found");
             }
 
             $token = $this->JWTManager->create($user);
             $newRefreshToken = $this->generateRefreshToken($user, $refreshToken);
 
         } else {
+            $this->logger->error(
+                sprintf(
+                    "User '%s' provide invalid refresh token: '%s'; Expired at: '%s'",
+                    $refreshToken->getUsername(),
+                    $refreshToken->getRefreshToken(),
+                    $refreshToken->getValid()->format('c')
+                )
+            );
             throw new InvalidTokenException('Invalid refresh token');
         }
 
         $response = new refreshResponseDTO();
         $response->token            = $token;
         $response->refresh_token    = $newRefreshToken->getRefreshToken();
+
+        $this->logger->info(
+            sprintf(
+                "User '%s' obtain new JWT token",
+                $refreshToken->getUsername(),
+            )
+        );
 
         return $response;
     }
@@ -95,6 +132,14 @@ class AuthQueryService extends BaseGraphQLService
         $refresh_token = $this->refreshTokenGenerator->createForUserWithTtl($user, $refresh_token_ttl);
         $this->entityManager->persist($refresh_token);
         $this->entityManager->flush();
+
+        $this->logger->info(
+            sprintf(
+                "User '%s' obtain new JWT refresh token",
+                $refreshToken->getUsername(),
+            )
+        );
+
         return $refresh_token;
     }
 }

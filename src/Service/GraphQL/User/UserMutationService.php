@@ -33,7 +33,13 @@ class UserMutationService extends BaseGraphQLService
 
         $user_entity = $this->entityManager->getRepository(User::class)->find($id);
         if (! $user_entity instanceof User) {
-            throw new EntityNotFoundException("User #{$id} not found");
+            $this->logger->error(
+                sprintf(
+                    "userUpdate: User #%s not found",
+                    $id
+                )
+            );
+            throw new EntityNotFoundException("User not found");
         }
 
         $roles = $this->roleHierarchy->getReachableRoleNames($this->security->getUser()->getRoles());
@@ -49,7 +55,20 @@ class UserMutationService extends BaseGraphQLService
                 $this->security->getUser()->getUserIdentifier() === $user_entity->getUserIdentifier()
             )
         ) {
-            throw new AccessDeniedException("User {$this->security->getUser()->getUserIdentifier()} has not access rights to update another user");
+            $this->logger->error(
+                sprintf(
+                    "User '%s' has not access rights to update user #%i",
+                    $this->security->getUser()->getUserIdentifier(),
+                    $id
+                )
+            );
+            throw new AccessDeniedException(
+                sprintf(
+                    "User '%s' has not access rights to update user #%i",
+                    $this->security->getUser()->getUserIdentifier(),
+                    $id
+                )
+            );
         }
 
         if (!empty($user->password)) {
