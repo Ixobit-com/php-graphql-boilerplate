@@ -1,50 +1,36 @@
-# GraphQL API Prototype
+# GraphQL API Boilerplate
 
-Используется библиотека overblog/graphql-bundle (https://github.com/overblog/GraphQLBundle)
+## Background and Problem Statement
+Simple template for quick start GraphQl API
 
-## Configuration:
+# System requirements
+* PHP 8.2+
+  * ext-ctype
+  * ext-iconv
+* MySQL 8
 
-* Настройки библиотеки: `config/packages/graphql.yaml`
-* Настройки самого АПИ расположены в `/config/graphql`
-* Формат настроек: GraphQL
+## Installation
 
-* Схема АПИ разбита на несколько логических частей (пока есть только user) и в дальнейшем будет расширяться.
-  Таким образом каждая часть имеет отдельную логическую точку входа.
-  Роутинг для АПИ при этом получается: `/api/graphql/<schema>` (например `/api/graphql/user`)
-* **Resolvers** конфигурируются в services.yaml (см. `App\GraphQL\Resolver\UserResolverMap` для схемы "user") 
-* Queries и Mutations расположены в `/config/graphql/<schema>` (напр. `/config/graphql/user/user.mutations.graphql`)
-* Типы и т.п. - расположены в `/config/graphql/types`
-* Общие типы в `common`. Типы, относящиеся к конкретной части схемы - в отдельных папках.
-* Input types лежат в папках "DTO" в соответствующих местах.
-* Расположение graphql файлов описывающих АПИ - условное. Библиотека ищет всё что лежит в `/config/graphql`. \
-  Поэтому всё это можно менять при необходимости.
 
-## Flow
+## Configuration
 
-* Запрос сначала разбирается библиотекой (на предмет соответствия синтаксису GraphQL и структуре АПИ)
-* Далее - в соответствии с настройками в `config/services.yaml` запрос передаётся в соответствующий Resolver (напр. для schema: user - **UserResolverMap**)
-* В Resolver происходят 2 вещи:
-  * Для query или mutation - происходит конвертация GraphQL Input type - в PHP DTO.
-   Получившийся DTO валидируется в соответствии с правилами, описанными в его аттрибутах.
-   Сервис - *DTOService* - самописный. Можно дорабатывать по мере необходимости.
-  * Вызывается соответствующий метод соответствующего сервиса (напр. для запроса `/api/graphql/user mutation createUser` - **userMutationService->userCreate()**).
-     В который передаются необходимые параметры.
-* Вся бизнес-логика АПИ реализуется в этих сервисах.
+* GraphQL library settings: `config/packages/graphql.yaml`
+* Settings format: Attributes (https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/index.md)
+* API scheme divide by logical parts. Any part have dedicated entry point (`/api/graphql/<schema>`). I.e. `/api/graphql/user`.
+* Queries and Mutations realized as Symfony service and placed in `src/Service/GraphQL`.
+* Input types, Output types, DTO, other types - `src/GraphQL`
 
 ## Authorization
 
-Авторизация реализована через стандартный механизм сессий фреймворка. Идентификатор сессии передаётся через заголовки для **Cookies**.\
-Напр. `PHPSESSID=k7aueqdq75urfivm30vrfhr4lo; Path=/; Secure; HttpOnly;`
+* JWT token authorization implemented
 
 ## Access control
 
-* Первичные права доступа проверяются на уровне фреймворка (для роута "api" или отдельных GraphQL схем: `/api/graphql/user`, `/api/graphql/admin` и т.п.)
-* Далее происходит проверка на уровне сервиса. У каждого метода каждого сервиса определяется аттрибут **Actions** (по сути - название для функционала, который метод реализует)
-* Проверка выполняется в методе checkAccess базового класса BaseGraphQLService - от которого должны наследоваться все сервисы АПИ.
-* Логика проверок пока реализована в классе **Actions**. Соответствие между функционалом и ролями пользователей описано массивами.
-  _В дальнейшем это надо будет перенести в базу данных для реализации кастомных ролей_.
-* И дополнительные проверки непосредственно в методах сервисов.
+* Basic access rights can be checked by framework using Symfony security mechanism (https://symfony.com/doc/current/security.html).
+* On the API level security checking use GraphQL bundle "#[Access]" attribute (https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/attributes-reference.md#access)
+* Validation in DTO implements utilise #[Assert] Symfony validation mechanism (https://symfony.com/doc/current/validation.html) 
 
 ## Links
-https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/attributes-reference.md \
-https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/index.md
+https://github.com/overblog/GraphQLBundle \
+https://github.com/lexik/LexikJWTAuthenticationBundle \
+https://github.com/markitosgv/JWTRefreshTokenBundle
