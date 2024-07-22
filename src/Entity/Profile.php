@@ -17,15 +17,22 @@ class Profile
 
     #[ORM\Column(length: 255)]
     #[GQL\Field]
+    #[GQL\Description("User's first name")]
     private ?string $first_name = null;
 
     #[ORM\Column(length: 255)]
     #[GQL\Field]
+    #[GQL\Description("User's last name")]
     private ?string $last_name = null;
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\Column(length: 255)]
+    #[GQL\Field]
+    #[GQL\Description("User's email")]
+    private ?string $email = null;
 
     public function getId(): ?int
     {
@@ -64,6 +71,18 @@ class Profile
     public function setUser(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }

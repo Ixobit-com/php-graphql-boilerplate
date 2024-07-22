@@ -28,6 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[GQL\Field(name: "roles", type: "[Role]!")]
+    #[GQL\Description("User's roles")]
     private array $roles = [];
 
     /**

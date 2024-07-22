@@ -17,4 +17,11 @@ class profileCreateInputDTO extends BaseDTO
     #[Assert\NotBlank]
     public string $last_name;
 
+    #[GQL\InputField(type: "String")]
+    #[Assert\Email]
+    #[Assert\NotBlank]
+    public string $email;
+
+
+
 }

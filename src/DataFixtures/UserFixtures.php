@@ -37,22 +37,16 @@ class UserFixtures extends Fixture
         }
 
         $orgadmin = (new User())
-                ->setLogin("admin")
-        ->setRoles([ExtendedRole::ROLE_ORGANIZATION_ADMIN])
-        ->setProfile(
-            (new Profile())
-                ->setFirstName("Admin")
-                ->setLastName("Admin"));
+            ->setLogin("admin")
+            ->setRoles([ExtendedRole::ROLE_ORGANIZATION_ADMIN])
+            ->setProfile($this->getFakeProfile());
         $orgadmin->setPassword($this->passwordHasher->hashPassword($orgadmin, 'password'));
         $manager->persist($orgadmin);
 
         $superadmin = (new User())
             ->setLogin("superadmin")
             ->setRoles([FullRole::ROLE_SUPERADMIN])
-            ->setProfile(
-                (new Profile())
-                    ->setFirstName("Super")
-                    ->setLastName("Super"));
+            ->setProfile($this->getFakeProfile());
         $superadmin->setPassword($this->passwordHasher->hashPassword($superadmin, 'password'));
         $manager->persist($superadmin);
 
@@ -64,15 +58,20 @@ class UserFixtures extends Fixture
         $user = (new User())
             ->setLogin($this->faker->userName())
             ->setRoles([self::$roles[array_rand(self::$roles)]])
-            ->setProfile(
-                (new Profile())
-                    ->setFirstName($this->faker->firstName())
-                    ->setLastName($this->faker->lastName()));
+            ->setProfile($this->getFakeProfile());
         if (empty($this->passwordHash)) {
             $this->passwordHash = $this->passwordHasher->hashPassword($user, 'password');
         }
         $user->setPassword($this->passwordHash);
         return $user;
+    }
+
+    private function getFakeProfile(): Profile
+    {
+        return (new Profile())
+            ->setFirstName($this->faker->firstName())
+            ->setLastName($this->faker->lastName())
+            ->setEmail($this->faker->email());
     }
 
 }
