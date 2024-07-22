@@ -2,11 +2,10 @@
 
 namespace App\Service\GraphQL\User;
 
+use App\Entity\GraphQL\DTO\User\Input\userUpdateInputDTO;
+use App\Entity\GraphQL\Role\ExtendedRole;
+use App\Entity\GraphQL\Role\FullRole;
 use App\Entity\User;
-use App\GraphQL\DTO\Input\userUpdateInputDTO;
-use App\GraphQL\DTO\Role\BaseRole;
-use App\GraphQL\DTO\Role\ExtendedRole;
-use App\GraphQL\DTO\Role\FullRole;
 use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityNotFoundException;
 use Overblog\GraphQLBundle\Annotation as GQL;
@@ -75,7 +74,7 @@ class UserMutationService extends BaseGraphQLService
             $user->password = $this->passwordHasher->hashPassword($user_entity, $user->password);
         }
 
-        $this->DTOService->hydrateEntityFromDTO($user, $user_entity);
+        $this->DTOService->hydrateEntityFromDTO($user, $user_entity); // Validation inside
 
         $this->entityManager->persist($user_entity);
         $this->entityManager->flush();

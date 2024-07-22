@@ -1,8 +1,8 @@
 <?php
 
-namespace App\GraphQL\DTO\Input;
+namespace App\Entity\GraphQL\DTO\User\Input;
 
-use App\GraphQL\DTO\BaseDTO;
+use App\Entity\GraphQL\DTO\BaseDTO;
 use Overblog\GraphQLBundle\Annotation as GQL;
 
 #[GQL\Input(name: "userUpdateInputDTO")]

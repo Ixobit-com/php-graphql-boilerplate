@@ -2,11 +2,11 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\GraphQL\Role\BaseRole;
+use App\Entity\GraphQL\Role\ExtendedRole;
+use App\Entity\GraphQL\Role\FullRole;
 use App\Entity\Profile;
 use App\Entity\User;
-use App\GraphQL\DTO\Role\BaseRole;
-use App\GraphQL\DTO\Role\ExtendedRole;
-use App\GraphQL\DTO\Role\FullRole;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;

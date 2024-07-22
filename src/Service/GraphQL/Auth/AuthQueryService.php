@@ -2,12 +2,12 @@
 
 namespace App\Service\GraphQL\Auth;
 
+use App\Entity\GraphQL\DTO\Auth\Input\loginInputDTO;
+use App\Entity\GraphQL\DTO\Auth\Input\refreshInputDTO;
+use App\Entity\GraphQL\DTO\Auth\Output\loginResponseDTO;
+use App\Entity\GraphQL\DTO\Auth\Output\refreshResponseDTO;
 use App\Entity\RefreshToken;
 use App\Entity\User;
-use App\GraphQL\DTO\Input\loginInputDTO;
-use App\GraphQL\DTO\Input\refreshInputDTO;
-use App\GraphQL\DTO\output\loginResponseDTO;
-use App\GraphQL\DTO\output\refreshResponseDTO;
 use App\Service\GraphQL\BaseGraphQLService;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
 use Gesdinet\JWTRefreshTokenBundle\Security\Exception\InvalidTokenException;

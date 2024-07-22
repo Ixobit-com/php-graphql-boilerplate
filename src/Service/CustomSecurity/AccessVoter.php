@@ -2,7 +2,7 @@
 
 namespace App\Service\CustomSecurity;
 
-use App\GraphQL\DTO\Role\FullRole;
+use App\Entity\GraphQL\Role\FullRole;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;

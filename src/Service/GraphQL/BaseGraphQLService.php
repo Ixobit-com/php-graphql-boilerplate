@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BaseGraphQLService
 {
@@ -26,7 +27,9 @@ class BaseGraphQLService
         protected RefreshTokenGeneratorInterface  $refreshTokenGenerator,
         protected ParameterBagInterface           $configuration,
         protected LoggerInterface                 $logger,
-        protected readonly RoleHierarchyInterface $roleHierarchy
+        protected readonly RoleHierarchyInterface $roleHierarchy,
+        protected readonly ValidatorInterface              $validator,
+
     ) {}
 
 }

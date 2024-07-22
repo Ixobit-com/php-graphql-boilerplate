@@ -2,8 +2,7 @@
 
 namespace App\Service\CustomSecurity;
 
-use App\GraphQL\DTO\Role\BaseRole;
-use App\GraphQL\DTO\Role\FullRole;
+use App\Entity\GraphQL\Role\FullRole;
 
 class Actions
 {

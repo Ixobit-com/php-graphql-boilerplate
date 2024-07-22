@@ -2,13 +2,20 @@
 
 namespace App\Service\DTO;
 
-use App\GraphQL\DTO\BaseDTO;
-use GraphQL\Type\Definition\ResolveInfo;
+use App\Entity\GraphQL\DTO\BaseDTO;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * DTO Manipulations
+ *  - validate incoming DTO
+ *  - hydrate Doctrine object from incoming DTO
+ *
+ * Important: DTO property name must be equal as Doctrine Entity property name
+ * @example
+ *  Right way: userUpdateInputDTO::profile -> \App\Entity\User::profile
+ *  Wrong way: userUpdateInputDTO::user_profile -> \App\Entity\User::profile
+ *
  */
 class DTOService
 {
@@ -23,81 +30,6 @@ class DTOService
     public function __construct(
         private readonly ValidatorInterface $validator
     ) {}
-//
-//    /**
-//     * Convert GraphQL arguments array into PHP array of scalar values and DTO objects
-//     * @param ResolveInfo $info
-//     * @return array
-//     * @throws \InvalidArgumentException
-//     * @throws \ReflectionException
-//     */
-//    public function convertGraphQLToDTO(ResolveInfo $info): array
-//    {
-//        $dto = []; $fieldNodesId = 0;
-//
-//        // $info->fieldNodes may contain more than 1 element!!! May be in case with several queries in one time
-//        if (count($info->fieldNodes) != 1) {
-//            throw new \InvalidArgumentException('FieldNodes contain more than 1 element');
-//        }
-//
-//        foreach ($info->fieldDefinition->args as $argument) {
-//            $variableName = $info->fieldNodes[0]->arguments[$fieldNodesId]->value->name->value;
-//            $className = $this->prepareDTOClassName($argument->getType()->toString() ?? '');
-//            if (in_array($className, self::$graphQLScalarTypes)) {
-//
-//                // try assign non scalar value to scalar declared variable
-//                if (!is_scalar($info->variableValues[$variableName])) {
-//                    throw new \InvalidArgumentException("Variable $className declared as scalar but it is a '".gettype($info->variableValues[$variableName])."'");
-//                }
-//
-//                $dto[$variableName] = $info->variableValues[$variableName];
-//            } else {
-//                $dto[$variableName] = $this->createDTOObject(
-//                    dto_class_name: 'App\DTO\\' . $className,
-//                    data: $info->variableValues[$variableName]
-//                );
-//            }
-//            $fieldNodesId++;
-//        }
-//        return $dto;
-//    }
-//
-//    /**
-//     * @param string $dto_class_name
-//     * @param array $data
-//     * @return BaseDTO
-//     * @throws \ReflectionException
-//     * @throws ValidationFailedException
-//     */
-//    private function createDTOObject(string $dto_class_name, array $data): BaseDTO
-//    {
-//        $dto = new $dto_class_name;
-//        $refDTO = new \ReflectionClass($dto::class);
-//
-//        foreach ($data as $property_name => $value) {
-//            if ($refDTO->getProperty($property_name)->getType()->isBuiltin()) {
-//                $dto->$property_name = $value;
-//            } else {
-//                $dto->$property_name = $this->createDTOObject($refDTO->getProperty($property_name)->getType()->getName(), $value);
-//            }
-//        }
-//
-//        $errors = $this->validator->validate($dto);
-//        if (count($errors) > 0) {
-//            throw new ValidationFailedException((string) $errors, $errors);
-//        }
-//        return $dto;
-//    }
-//
-//    /**
-//     * Use for convert DTO type name to PHP DTO Class name (i.e. ID! -> ID)
-//     * @param string $className
-//     * @return string
-//     */
-//    private function prepareDTOClassName(string $className): string
-//    {
-//        return trim($className, '! ');
-//    }
 
     /**
      * Hydrate Entity object from DTO Object
@@ -113,6 +45,12 @@ class DTOService
      */
     public function hydrateEntityFromDTO(BaseDTO $dto, object $entity): object
     {
+
+// Validate incoming DTO first
+        $errors = $this->validator->validate($dto);
+        if (count($errors) > 0) {
+            throw new ValidationFailedException((string) $errors, $errors);
+        }
 
         $DTOReflection     = new \ReflectionClass($dto::class);
         $EntityReflection  = new \ReflectionClass($entity);

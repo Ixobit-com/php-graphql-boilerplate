@@ -1,10 +1,9 @@
 <?php
 
-namespace App\GraphQL\DTO\Input;
+namespace App\Entity\GraphQL\DTO;
 
-use App\GraphQL\DTO\BaseDTO;
-use Symfony\Component\Validator\Constraints as Assert;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[GQL\Input(name: "paginationInputDTO")]
 final class paginationInputDTO extends BaseDTO {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\GraphQL\DTO\Input;
+namespace App\Entity\GraphQL\DTO\Auth\Input;
 
-use App\GraphQL\DTO\BaseDTO;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\GraphQL\DTO\BaseDTO;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[GQL\Input(name: "refreshInputDTO")]
 class refreshInputDTO extends BaseDTO

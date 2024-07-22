@@ -1,10 +1,11 @@
 <?php
 
-namespace App\GraphQL\DTO\Input;
+namespace App\Entity\GraphQL\DTO\User\Input;
 
-use App\GraphQL\DTO\BaseDTO;
+use App\Entity\GraphQL\DTO\BaseDTO;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Email;
 
 #[GQL\Input(name: "profileUpdateInputDTO")]
 class profileUpdateInputDTO extends BaseDTO
@@ -16,7 +17,7 @@ class profileUpdateInputDTO extends BaseDTO
     public ?string $last_name;
 
     #[GQL\InputField(type: "String")]
-    #[Assert\Email]
-    public string $email;
+    #[Assert\Email(message: "Provided email '{{ value }}' is not valid email address", mode: Email::VALIDATION_MODE_STRICT)]
+    public ?string $email;
 
 }

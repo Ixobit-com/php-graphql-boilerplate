@@ -2,8 +2,8 @@
 
 namespace App\Service\GraphQL\User;
 
+use App\Entity\GraphQL\DTO\paginationInputDTO;
 use App\Entity\User;
-use App\GraphQL\DTO\Input\paginationInputDTO;
 use App\Service\GraphQL\BaseGraphQLService;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;

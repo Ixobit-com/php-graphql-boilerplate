@@ -1,9 +1,8 @@
 <?php
 
-namespace App\GraphQL\DTO\output;
+namespace App\Entity\GraphQL\DTO\Auth\Output;
 
-use App\Entity\User;
-use App\GraphQL\DTO\BaseDTO;
+use App\Entity\GraphQL\DTO\BaseDTO;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 

@@ -2,11 +2,11 @@
 
 namespace App\Service\GraphQL\Auth;
 
+use App\Entity\GraphQL\DTO\User\Input\userRegistrationInputDTO;
 use App\Entity\User;
-use App\GraphQL\DTO\Input\userRegistrationInputDTO;
 use App\Service\GraphQL\BaseGraphQLService;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 
 #[Autoconfigure(public: true)]

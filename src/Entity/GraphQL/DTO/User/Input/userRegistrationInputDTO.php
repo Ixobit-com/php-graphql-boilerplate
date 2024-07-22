@@ -1,10 +1,9 @@
 <?php
 
-namespace App\GraphQL\DTO\Input;
+namespace App\Entity\GraphQL\DTO\User\Input;
 
-use App\GraphQL\DTO\BaseDTO;
-use App\GraphQL\DTO\Role\BaseRole;
-use App\GraphQL\DTO\Role\ExtendedRole;
+use App\Entity\GraphQL\DTO\BaseDTO;
+use App\Entity\GraphQL\Role\ExtendedRole;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;
 

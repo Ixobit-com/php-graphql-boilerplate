@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GraphQL\DTO;
+namespace App\Entity\GraphQL\DTO;
 
 class BaseDTO
 {

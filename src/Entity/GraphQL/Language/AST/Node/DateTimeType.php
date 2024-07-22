@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GraphQL\Language\AST\Node;
+namespace App\Entity\GraphQL\Language\AST\Node;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\ScalarType;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GraphQL\DTO\Role;
+namespace App\Entity\GraphQL\Role;
 
 use Overblog\GraphQLBundle\Annotation as GQL;
 
