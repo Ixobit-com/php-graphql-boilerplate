@@ -5,6 +5,7 @@ namespace App\Service\GraphQL\User;
 use App\Entity\GraphQL\DTO\User\Input\userUpdateInputDTO;
 use App\Entity\GraphQL\Role\ExtendedRole;
 use App\Entity\GraphQL\Role\FullRole;
+use App\Entity\RefreshToken;
 use App\Entity\User;
 use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityNotFoundException;
@@ -70,8 +71,21 @@ class UserMutationService extends BaseGraphQLService
             );
         }
 
-        if (!empty($user->password)) {
+        if (!empty($user->password)) { // hash new password
             $user->password = $this->passwordHasher->hashPassword($user_entity, $user->password);
+        }
+
+        if (!empty($user->login)) { // try to change user identifier: remove old refresh token. User must authorize again.
+            $old_user_identifier = $user_entity->getUserIdentifier();
+            $refresh_token = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(["username" => $old_user_identifier]);
+            $this->entityManager->remove($refresh_token);
+            $this->logger->info(
+                sprintf(
+                    "User try to change username from '%s' to '%s'; Remove old refresh token.",
+                    $old_user_identifier,
+                    $user->login
+                )
+            );
         }
 
         $this->DTOService->hydrateEntityFromDTO($user, $user_entity); // Validation inside

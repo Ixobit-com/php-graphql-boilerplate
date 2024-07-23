@@ -30,12 +30,23 @@ class AuthQueryService extends BaseGraphQLService
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['login' => $loginInfo->login]);
         if (!$user instanceof UserInterface) {
-            $this->logger->error("User {$loginInfo->login} not found");
+            $this->logger->error(
+                sprintf(
+                    "User '%s' not found",
+                    $loginInfo->login
+                )
+            );
             throw new AuthenticationException("User '{$loginInfo->login}' not found");
         }
 
         if (!$this->passwordHasher->isPasswordValid($user, $loginInfo->password)) {
-            $this->logger->error("User '{$user->getUserIdentifier()}' provide invalid password: '{$loginInfo->password}'");
+            $this->logger->error(
+                sprintf("User '%s' provide invalid password: '%s'",
+                    $user->getUserIdentifier(),
+                    $loginInfo->password
+                )
+            );
+
             throw new AuthenticationException('Invalid credentials');
         }
 
@@ -136,7 +147,7 @@ class AuthQueryService extends BaseGraphQLService
         $this->logger->info(
             sprintf(
                 "User '%s' obtain new JWT refresh token",
-                $refreshToken->getUsername(),
+                $refresh_token->getUsername(),
             )
         );
 
