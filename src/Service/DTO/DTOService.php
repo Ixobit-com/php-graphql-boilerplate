@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\DTO;
 
 use App\Entity\GraphQL\DTO\BaseDTO;
@@ -9,44 +11,42 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * DTO Manipulations
  *  - validate incoming DTO
- *  - hydrate Doctrine object from incoming DTO
+ *  - hydrate Doctrine object from incoming DTO.
  *
  * Important: DTO property name must be equal as Doctrine Entity property name
+ *
  * @example
  *  Right way: userUpdateInputDTO::profile -> \App\Entity\User::profile
  *  Wrong way: userUpdateInputDTO::user_profile -> \App\Entity\User::profile
- *
  */
 class DTOService
 {
     private static array $graphQLScalarTypes = [
-        "Int",      // A signed 32‐bit integer.
-        "Float",    // A signed double-precision floating-point value.
-        "String",   // A UTF‐8 character sequence.
-        "Boolean",  // true or false.
-        "ID",       // The ID scalar type represents a unique identifier, often used to refetch an object or as the key for a cache.
+        'Int',      // A signed 32‐bit integer.
+        'Float',    // A signed double-precision floating-point value.
+        'String',   // A UTF‐8 character sequence.
+        'Boolean',  // true or false.
+        'ID',       // The ID scalar type represents a unique identifier, often used to refetch an object or as the key for a cache.
     ];
 
     public function __construct(
         private readonly ValidatorInterface $validator
-    ) {}
+    ) {
+    }
 
     /**
      * Hydrate Entity object from DTO Object
-     *  - DTO properties must be named exactly as Entity properties
+     *  - DTO properties must be named exactly as Entity properties.
+     *
      * @example
      * DTO property: public profileCreateInputDTO $profile;
      * Entity property: private ?Profile $profile = null;
      *
-     * @param BaseDTO $dto
-     * @param object $entity
-     * @return object
      * @throws \ReflectionException
      */
     public function hydrateEntityFromDTO(BaseDTO $dto, object $entity): object
     {
-
-// Validate incoming DTO first
+        // Validate incoming DTO first
         $errors = $this->validator->validate($dto);
         if (count($errors) > 0) {
             throw new ValidationFailedException((string) $errors, $errors);
@@ -61,8 +61,8 @@ class DTOService
                 $entity_access_method_name = $this->getAccessMethodName($dto_property_name);
 
                 // Getters\Setters from underscore to Doctrine style: property_name -> setPropertyName, getPropertyName
-                $setter_name = 'set' . $entity_access_method_name;
-                $getter_name = 'get' . $entity_access_method_name;
+                $setter_name = 'set'.$entity_access_method_name;
+                $getter_name = 'get'.$entity_access_method_name;
 
                 // Check getter, setter exists
                 if (!method_exists($entity, $setter_name) or !method_exists($entity, $getter_name)) {
@@ -77,7 +77,7 @@ class DTOService
                     $entity_property_value = $entity->$getter_name();
 
                     if (!$value_from_dto instanceof BaseDTO) { // DTO property must extend BaseDTO class
-                        throw new \LogicException("Unexpected entity class '" . $entity_property_value::class . "'; ".get_class($value_from_dto)." received");
+                        throw new \LogicException("Unexpected entity class '".$entity_property_value::class."'; ".get_class($value_from_dto).' received');
                     }
 
                     $entity_property_type = $EntityReflection->getProperty($dto_property_name)->getType()->getName();
@@ -86,33 +86,32 @@ class DTOService
                     }
 
                     if (is_null($entity_property_value)) {
-                        $entity_property_value = new $entity_property_type; // Create empty Entity for property, if not exists (i.e. for new Entity)
+                        $entity_property_value = new $entity_property_type(); // Create empty Entity for property, if not exists (i.e. for new Entity)
                     } elseif (!$entity_property_value instanceof $entity_property_type) {
-                        throw new \LogicException("Entity property '$dto_property_name' return '".gettype($entity_property_value)."'; ".$entity_property_type." expected");
+                        throw new \LogicException("Entity property '$dto_property_name' return '".gettype($entity_property_value)."'; ".$entity_property_type.' expected');
                     }
 
                     $entity->$setter_name($this->hydrateEntityFromDTO($value_from_dto, $entity_property_value));
                 }
             }
         }
+
         return $entity;
     }
 
     /**
      * Normalize property name
      *  - from underscore to CamelCase
-     *  - First letter to uppercase
-     *
-     * @param string $name
-     * @return string
+     *  - First letter to uppercase.
      */
     private function getAccessMethodName(string $name): string
     {
         $substrings = explode('_', $name);
         array_walk($substrings, function (&$subname) {
-                $subname = ucfirst(strtolower($subname));
-            }
+            $subname = ucfirst(strtolower($subname));
+        }
         );
+
         return implode('', $substrings);
     }
 }

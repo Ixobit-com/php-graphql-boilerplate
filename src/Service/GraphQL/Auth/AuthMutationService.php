@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\GraphQL\Auth;
 
 use App\Entity\GraphQL\DTO\User\Input\userRegistrationInputDTO;
@@ -8,23 +10,18 @@ use App\Service\GraphQL\BaseGraphQLService;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'AuthMutation')]
 #[GQL\Access("hasRole('PUBLIC_ACCESS')")]
 class AuthMutationService extends BaseGraphQLService
 {
     /**
-     * @param userRegistrationInputDTO $user
-     * @return User
      * @throws \ReflectionException
      */
-
     #[GQL\Mutation]
-    #[GQL\Arg(name: "user", type: "userRegistrationInputDTO")]
+    #[GQL\Arg(name: 'user', type: 'userRegistrationInputDTO')]
     public function userRegistration(userRegistrationInputDTO $user): User
     {
-
         $newUser = new User();
 
         $this->DTOService->hydrateEntityFromDTO($user, $newUser);
@@ -44,5 +41,4 @@ class AuthMutationService extends BaseGraphQLService
 
         return $newUser;
     }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity\GraphQL\Language\AST\Node;
 
 use GraphQL\Language\AST\Node;
@@ -18,13 +20,10 @@ class DateTimeType extends ScalarType
     }
 
     /**
-     * @param mixed $value
-     *
      * @return \DateTimeInterface
      */
     public function parseValue($value): mixed
     {
-
         return new \DateTimeImmutable($value);
     }
 
@@ -33,7 +32,7 @@ class DateTimeType extends ScalarType
      *
      * @return \DateTimeInterface
      */
-    public function parseLiteral($valueNode, array $variables = null): mixed
+    public function parseLiteral($valueNode, ?array $variables = null): mixed
     {
         return new \DateTimeImmutable($valueNode->value);
     }

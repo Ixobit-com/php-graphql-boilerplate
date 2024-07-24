@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\GraphQL\User;
 
 use App\Entity\GraphQL\DTO\User\Input\userUpdateInputDTO;
@@ -13,46 +15,41 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'UserMutation')]
 class UserMutationService extends BaseGraphQLService
 {
     /**
-     * @param int $id
-     * @param userUpdateInputDTO $user
-     * @return User
      * @throws \ReflectionException
      */
-    #[GQL\Field(type: "User")]
+    #[GQL\Field(type: 'User')]
     #[GQL\Access("isGranted('USER_UPDATE')")]
-    #[GQL\Arg(name: "id", type: "ID!")]
-    #[GQL\Arg(name: "user", type: "userUpdateInputDTO")]
+    #[GQL\Arg(name: 'id', type: 'ID!')]
+    #[GQL\Arg(name: 'user', type: 'userUpdateInputDTO')]
     public function userUpdate(int $id, userUpdateInputDTO $user): User
     {
-
         $user_entity = $this->entityManager->getRepository(User::class)->find($id);
-        if (! $user_entity instanceof User) {
+        if (!$user_entity instanceof User) {
             $this->logger->error(
                 sprintf(
-                    "userUpdate: User #%s not found",
+                    'userUpdate: User #%s not found',
                     $id
                 )
             );
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException('User not found');
         }
 
         $roles = $this->roleHierarchy->getReachableRoleNames($this->security->getUser()->getRoles());
         if (
             !(
                 // Superadmin has full access
-                in_array(FullRole::ROLE_SUPERADMIN, $roles) or
-                (
+                in_array(FullRole::ROLE_SUPERADMIN, $roles)
+                or (
                     // additional check (is the current user is organization admin and updated user from his organization
                     in_array(ExtendedRole::ROLE_ORGANIZATION_ADMIN, $roles) and true
-                ) or
+                )
                 // user update himself
-                $this->security->getUser()->getUserIdentifier() === $user_entity->getUserIdentifier()
+                or $this->security->getUser()->getUserIdentifier() === $user_entity->getUserIdentifier()
             )
         ) {
             $this->logger->error(
@@ -62,13 +59,7 @@ class UserMutationService extends BaseGraphQLService
                     $id
                 )
             );
-            throw new AccessDeniedException(
-                sprintf(
-                    "User '%s' has not access rights to update user #%i",
-                    $this->security->getUser()->getUserIdentifier(),
-                    $id
-                )
-            );
+            throw new AccessDeniedException(sprintf("User '%s' has not access rights to update user #%i", $this->security->getUser()->getUserIdentifier(), $id));
         }
 
         if (!empty($user->password)) { // hash new password
@@ -77,7 +68,7 @@ class UserMutationService extends BaseGraphQLService
 
         if (!empty($user->login)) { // try to change user identifier: remove old refresh token. User must authorize again.
             $old_user_identifier = $user_entity->getUserIdentifier();
-            $refresh_token = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(["username" => $old_user_identifier]);
+            $refresh_token       = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(['username' => $old_user_identifier]);
             $this->entityManager->remove($refresh_token);
             $this->logger->info(
                 sprintf(
@@ -95,5 +86,4 @@ class UserMutationService extends BaseGraphQLService
 
         return $user_entity;
     }
-
 }

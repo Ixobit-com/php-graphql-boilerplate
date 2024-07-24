@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\GraphQL\Auth;
 
 use App\Entity\GraphQL\DTO\Auth\Input\loginInputDTO;
@@ -23,9 +25,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[WithMonologChannel('security')]
 class AuthQueryService extends BaseGraphQLService
 {
-
-    #[GQL\Field(type: "loginResponseDTO")]
-    #[GQL\Arg(name: "loginInfo", type: "loginInputDTO")]
+    #[GQL\Field(type: 'loginResponseDTO')]
+    #[GQL\Arg(name: 'loginInfo', type: 'loginInputDTO')]
     public function login(loginInputDTO $loginInfo): ?loginResponseDTO
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['login' => $loginInfo->login]);
@@ -52,7 +53,7 @@ class AuthQueryService extends BaseGraphQLService
 
         $token = $this->JWTManager->create($user);
 
-        $response = new loginResponseDTO();
+        $response     = new loginResponseDTO();
         $refreshToken = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(['username' => $user->getUserIdentifier()]);
         if (!$refreshToken instanceof RefreshToken) { // refresh token is not exists
             $refreshToken = $this->generateRefreshToken($user);
@@ -71,11 +72,10 @@ class AuthQueryService extends BaseGraphQLService
         return $response;
     }
 
-    #[GQL\Field(type: "refreshResponseDTO")]
-    #[GQL\Arg(name: "refreshInfo", type: "refreshInputDTO")]
+    #[GQL\Field(type: 'refreshResponseDTO')]
+    #[GQL\Arg(name: 'refreshInfo', type: 'refreshInputDTO')]
     public function refresh(refreshInputDTO $refreshInfo): ?refreshResponseDTO
     {
-
         $refreshToken = $this->entityManager->getRepository(RefreshToken::class)->findOneBy(['refreshToken' => $refreshInfo->refresh_token]);
 
         if (!$refreshToken instanceof RefreshToken) {
@@ -89,7 +89,6 @@ class AuthQueryService extends BaseGraphQLService
         }
 
         if ($refreshToken->isValid()) {
-
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['login' => $refreshToken->getUsername()]);
             if (!$user instanceof UserInterface) {
                 $this->logger->error(
@@ -99,12 +98,11 @@ class AuthQueryService extends BaseGraphQLService
                         $refreshInfo->refresh_token
                     )
                 );
-                throw new AuthenticationException("User for this refresh token is not found");
+                throw new AuthenticationException('User for this refresh token is not found');
             }
 
-            $token = $this->JWTManager->create($user);
+            $token           = $this->JWTManager->create($user);
             $newRefreshToken = $this->generateRefreshToken($user, $refreshToken);
-
         } else {
             $this->logger->error(
                 sprintf(
@@ -117,7 +115,7 @@ class AuthQueryService extends BaseGraphQLService
             throw new InvalidTokenException('Invalid refresh token');
         }
 
-        $response = new refreshResponseDTO();
+        $response                   = new refreshResponseDTO();
         $response->token            = $token;
         $response->refresh_token    = $newRefreshToken->getRefreshToken();
 
@@ -131,9 +129,8 @@ class AuthQueryService extends BaseGraphQLService
         return $response;
     }
 
-    private function generateRefreshToken(User $user, RefreshToken $refreshToken = null): RefreshTokenInterface
+    private function generateRefreshToken(User $user, ?RefreshToken $refreshToken = null): RefreshTokenInterface
     {
-
         $refresh_token_ttl = $this->configuration->get('gesdinet_jwt_refresh_token.ttl');
 
         if ($refreshToken instanceof RefreshToken) {

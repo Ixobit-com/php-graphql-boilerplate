@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\GraphQL\Role\BaseRole;
@@ -23,28 +25,27 @@ class UserFixtures extends Fixture
 
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
-    )
-    {
+    ) {
         $this->faker    = Factory::create();
     }
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 100; ++$i) {
             $manager->persist(
                 $this->getFakeUser()
             );
         }
 
         $orgadmin = (new User())
-            ->setLogin("admin")
+            ->setLogin('admin')
             ->setRoles([ExtendedRole::ROLE_ORGANIZATION_ADMIN])
             ->setProfile($this->getFakeProfile());
         $orgadmin->setPassword($this->passwordHasher->hashPassword($orgadmin, 'password'));
         $manager->persist($orgadmin);
 
         $superadmin = (new User())
-            ->setLogin("superadmin")
+            ->setLogin('superadmin')
             ->setRoles([FullRole::ROLE_SUPERADMIN])
             ->setProfile($this->getFakeProfile());
         $superadmin->setPassword($this->passwordHasher->hashPassword($superadmin, 'password'));
@@ -63,6 +64,7 @@ class UserFixtures extends Fixture
             $this->passwordHash = $this->passwordHasher->hashPassword($user, 'password');
         }
         $user->setPassword($this->passwordHash);
+
         return $user;
     }
 
@@ -73,5 +75,4 @@ class UserFixtures extends Fixture
             ->setLastName($this->faker->lastName())
             ->setEmail($this->faker->email());
     }
-
 }
