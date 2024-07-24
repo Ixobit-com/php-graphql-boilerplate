@@ -20,6 +20,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class UserMutationService extends BaseGraphQLService
 {
     /**
+     * Update basic user info.
+     *  - login
+     *  - password
+     *  - profile info.
+     *
      * @throws \ReflectionException
      */
     #[GQL\Field(type: 'User')]

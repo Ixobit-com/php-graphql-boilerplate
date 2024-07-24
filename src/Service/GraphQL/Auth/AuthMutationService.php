@@ -16,6 +16,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 class AuthMutationService extends BaseGraphQLService
 {
     /**
+     * Registration new user.
+     *
      * @throws \ReflectionException
      */
     #[GQL\Mutation]
