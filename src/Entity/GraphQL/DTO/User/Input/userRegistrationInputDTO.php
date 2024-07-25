@@ -28,7 +28,7 @@ class userRegistrationInputDTO extends BaseDTO
     public array $roles;
 
     #[GQL\InputField(type: 'profileCreateInputDTO')]
-    #[Assert\NotBlank]
+    #[Assert\Valid]
     public profileCreateInputDTO $profile;
 
     /**

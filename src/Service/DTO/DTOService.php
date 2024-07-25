@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace App\Service\DTO;
 
 use App\Entity\GraphQL\DTO\BaseDTO;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * DTO Manipulations
- *  - validate incoming DTO
  *  - hydrate Doctrine object from incoming DTO.
  *
  * Important: DTO property name must be equal as Doctrine Entity property name
@@ -29,14 +26,14 @@ class DTOService
         'ID',       // The ID scalar type represents a unique identifier, often used to refetch an object or as the key for a cache.
     ];
 
-    public function __construct(
-        private readonly ValidatorInterface $validator
-    ) {
+    public function __construct()
+    {
     }
 
     /**
      * Hydrate Entity object from DTO Object
      *  - DTO properties must be named exactly as Entity properties.
+     *  - DTO has validated by GraphQL library before hydration.
      *
      * @example
      * DTO property: public profileCreateInputDTO $profile;
@@ -46,12 +43,6 @@ class DTOService
      */
     public function hydrateEntityFromDTO(BaseDTO $dto, object $entity): object
     {
-        // Validate incoming DTO first
-        $errors = $this->validator->validate($dto);
-        if (count($errors) > 0) {
-            throw new ValidationFailedException((string) $errors, $errors);
-        }
-
         $DTOReflection     = new \ReflectionClass($dto::class);
         $EntityReflection  = new \ReflectionClass($entity);
 

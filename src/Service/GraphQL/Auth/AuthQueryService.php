@@ -42,7 +42,7 @@ class AuthQueryService extends BaseGraphQLService
                     $loginInfo->login
                 )
             );
-            throw new AuthenticationException("User '{$loginInfo->login}' not found");
+            throw new AuthenticationException('Invalid credentials');
         }
 
         if (!$this->passwordHasher->isPasswordValid($user, $loginInfo->password)) {
