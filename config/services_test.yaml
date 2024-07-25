@@ -1,0 +1,17 @@
+services:
+    debug.validator.test:
+        alias: 'debug.validator'
+        public: true
+    security.user_password_hasher.test:
+        alias: "security.user_password_hasher"
+        public: true
+    doctrine.orm.default_entity_manager.test:
+        alias: 'doctrine.orm.default_entity_manager'
+        public: true
+    security.helper.test:
+        alias: 'security.helper'
+        public: true
+
+    security.authenticator.jwt.main.test:
+        alias: 'security.authenticator.jwt.main'
+        public: true

@@ -51,6 +51,13 @@ class UserFixtures extends Fixture
         $superadmin->setPassword($this->passwordHasher->hashPassword($superadmin, 'password'));
         $manager->persist($superadmin);
 
+        $driver = (new User())
+            ->setLogin('driver')
+            ->setRoles([BaseRole::ROLE_DRIVER])
+            ->setProfile($this->getFakeProfile());
+        $driver->setPassword($this->passwordHasher->hashPassword($driver, 'password'));
+        $manager->persist($driver);
+
         $manager->flush();
     }
 

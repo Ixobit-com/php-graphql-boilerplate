@@ -15,6 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/** @TODO remove it */
 class BaseGraphQLService
 {
     public function __construct(
