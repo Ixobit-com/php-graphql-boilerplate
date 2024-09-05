@@ -11,6 +11,4 @@ readonly class BaseRole
 {
     #[GQL\Description('Common user role')]
     public const ROLE_USER                 = 'ROLE_USER';
-    #[GQL\Description('Driver')]
-    public const ROLE_DRIVER               = 'ROLE_DRIVER';
 }

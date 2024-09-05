@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\DTO;
 
-use App\Entity\GraphQL\DTO\BaseDTO;
+use App\Entity\GraphQL\DTO\Common\BaseDTO;
 
 /**
  * DTO Manipulations

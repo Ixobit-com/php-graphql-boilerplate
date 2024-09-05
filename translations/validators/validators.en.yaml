@@ -1,0 +1,20 @@
+user.login.required: Login is required
+user.login.already.exists: Login {{ value }} already exists
+user.login.invalid.alphanumerical: Login {{ value }} must be an alphanumerical
+user.login.invalid.min.length: Login length must be at least {{ limit }} characters long
+user.login.invalid.max.length: Login length must cannot be longer than {{ limit }} characters
+user.password.required: Password is required
+user.refresh.token.required:  Refresh token is required
+user.undefined: User {{ value }} not found
+
+profile.first.name.required: First name is required
+profile.last.name.required: Last name is required
+profile.email.required: Email is required
+profile.email.invalid: Provided email {{ value }} is not valid email address
+profile.email.invalid.max.length:  Email length must cannot be longer than {{ limit }} characters
+profile.first.name.min.length: First name length must be at least {{ limit }} characters long
+profile.first.name.max.length: First name length must cannot be longer than {{ limit }}
+profile.last.name.min.length: Last name length must be at least {{ limit }} characters long
+profile.last.name.max.length: Last name length must cannot be longer than {{ limit }}
+profile.first.name.invalid.alphanumerical: First name {{ value }} must be an alphanumerical
+profile.last.name.invalid.alphanumerical: Last name { value }} must be an alphanumerical

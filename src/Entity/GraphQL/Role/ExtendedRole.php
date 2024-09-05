@@ -10,5 +10,5 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 readonly class ExtendedRole extends BaseRole
 {
     #[GQL\Description('Organization administrator')]
-    public const ROLE_ORGANIZATION_ADMIN   = 'ROLE_ORGANIZATION_ADMIN';
+    public const ROLE_ADMIN   = 'ROLE_ADMIN';
 }

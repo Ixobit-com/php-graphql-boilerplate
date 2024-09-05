@@ -21,13 +21,13 @@ class Actions
         FullRole::ROLE_SUPERADMIN => [
             // Have access for all actions
         ],
-        FullRole::ROLE_ORGANIZATION_ADMIN => [
+        FullRole::ROLE_ADMIN => [
             self::RETRIEVE_USERS_LIST,
         ],
         FullRole::ROLE_USER => [
             self::USER_UPDATE,
             self::RETRIEVE_USER_INFO,
         ],
-        FullRole::ROLE_DRIVER => [],
+        FullRole::ROLE_USER => [],
     ];
 }

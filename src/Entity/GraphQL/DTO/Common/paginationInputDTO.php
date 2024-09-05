@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\GraphQL\DTO;
+namespace App\Entity\GraphQL\DTO\Common;
 
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Symfony\Component\Validator\Constraints as Assert;

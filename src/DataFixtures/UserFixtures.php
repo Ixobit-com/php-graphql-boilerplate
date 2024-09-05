@@ -17,11 +17,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
+    public const DEFAULT_PASSWORD          = 'password';
+    public const DEFAULT_USER_LOGIN        = 'user';
+    public const DEFAULT_ADMIN_LOGIN       = 'admin';
+    public const DEFAULT_SUPER_ADMIN_LOGIN = 'superadmin';
+
     private Generator $faker;
-
     private string $passwordHash;
-
-    private static array $roles = [ExtendedRole::ROLE_ORGANIZATION_ADMIN, BaseRole::ROLE_DRIVER];
+    private static array $roles = [ExtendedRole::ROLE_ADMIN, BaseRole::ROLE_USER];
 
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
@@ -37,26 +40,26 @@ class UserFixtures extends Fixture
             );
         }
 
-        $orgadmin = (new User())
-            ->setLogin('admin')
-            ->setRoles([ExtendedRole::ROLE_ORGANIZATION_ADMIN])
+        $user = (new User())
+            ->setLogin(self::DEFAULT_USER_LOGIN)
+            ->setRoles([BaseRole::ROLE_USER])
             ->setProfile($this->getFakeProfile());
-        $orgadmin->setPassword($this->passwordHasher->hashPassword($orgadmin, 'password'));
+        $user->setPassword($this->passwordHasher->hashPassword($user, self::DEFAULT_PASSWORD));
+        $manager->persist($user);
+
+        $orgadmin = (new User())
+            ->setLogin(self::DEFAULT_ADMIN_LOGIN)
+            ->setRoles([ExtendedRole::ROLE_ADMIN])
+            ->setProfile($this->getFakeProfile());
+        $orgadmin->setPassword($this->passwordHasher->hashPassword($orgadmin, self::DEFAULT_PASSWORD));
         $manager->persist($orgadmin);
 
         $superadmin = (new User())
-            ->setLogin('superadmin')
+            ->setLogin(self::DEFAULT_SUPER_ADMIN_LOGIN)
             ->setRoles([FullRole::ROLE_SUPERADMIN])
             ->setProfile($this->getFakeProfile());
-        $superadmin->setPassword($this->passwordHasher->hashPassword($superadmin, 'password'));
+        $superadmin->setPassword($this->passwordHasher->hashPassword($superadmin, self::DEFAULT_PASSWORD));
         $manager->persist($superadmin);
-
-        $driver = (new User())
-            ->setLogin('driver')
-            ->setRoles([BaseRole::ROLE_DRIVER])
-            ->setProfile($this->getFakeProfile());
-        $driver->setPassword($this->passwordHasher->hashPassword($driver, 'password'));
-        $manager->persist($driver);
 
         $manager->flush();
     }
@@ -68,7 +71,7 @@ class UserFixtures extends Fixture
             ->setRoles([self::$roles[array_rand(self::$roles)]])
             ->setProfile($this->getFakeProfile());
         if (empty($this->passwordHash)) {
-            $this->passwordHash = $this->passwordHasher->hashPassword($user, 'password');
+            $this->passwordHash = $this->passwordHasher->hashPassword($user, self::DEFAULT_PASSWORD);
         }
         $user->setPassword($this->passwordHash);
 

@@ -6,6 +6,7 @@ namespace App\Tests\Service\Auth;
 
 use App\Entity\GraphQL\DTO\User\Input\profileCreateInputDTO;
 use App\Entity\GraphQL\DTO\User\Input\userRegistrationInputDTO;
+use App\Entity\GraphQL\Role\BaseRole;
 use App\Entity\GraphQL\Role\FullRole;
 use App\Entity\User;
 use App\Service\GraphQL\Auth\AuthMutationService;
@@ -81,7 +82,7 @@ class AuthMutationServiceTest extends KernelTestCase
         yield 'dto.not_unique_login' => [
             'login'     => 'admin',
             'password'  => 'password',
-            'roles'     => [FullRole::ROLE_DRIVER],
+            'roles'     => [BaseRole::ROLE_USER],
             'profile'   => function (): profileCreateInputDTO {
                 $profile             = new profileCreateInputDTO();
                 $profile->email      = 'valid@email.com';
@@ -97,7 +98,7 @@ class AuthMutationServiceTest extends KernelTestCase
         yield 'dto.not_valid_email_and_password' => [
             'login'     => 'new_driver',
             'password'  => '',
-            'roles'     => [FullRole::ROLE_DRIVER],
+            'roles'     => [BaseRole::ROLE_USER],
             'profile'   => function (): profileCreateInputDTO {
                 $profile             = new profileCreateInputDTO();
                 $profile->email      = 'not_valid_email';
@@ -129,7 +130,7 @@ class AuthMutationServiceTest extends KernelTestCase
         yield 'dto.valid_user' => [
             'login'     => 'new_driver',
             'password'  => 'password',
-            'roles'     => [FullRole::ROLE_DRIVER],
+            'roles'     => [BaseRole::ROLE_USER],
             'profile'   => function (): profileCreateInputDTO {
                 $profile             = new profileCreateInputDTO();
                 $profile->email      = 'valid@email.com';

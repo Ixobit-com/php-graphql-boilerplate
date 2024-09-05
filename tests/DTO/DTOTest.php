@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\DTO;
 
-use App\Entity\GraphQL\DTO\BaseDTO;
+use App\Entity\GraphQL\DTO\Common\BaseDTO;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DTOTest extends KernelTestCase
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\User;
 
-use App\Entity\GraphQL\DTO\paginationInputDTO;
+use App\Entity\GraphQL\DTO\Common\paginationInputDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\GraphQL\User\UserQueryService;
@@ -25,7 +25,7 @@ class UserQueryServiceTest extends WebTestCase
         $this->currentUser                      = $this->userRepository->findOneBy(['login' => 'admin']);
         $this->client->loginUser($this->currentUser);
 
-        $this->userService         = static::getContainer()->get(UserQueryService::class);
+        $this->userService = static::getContainer()->get(UserQueryService::class);
 
         parent::setUp();
     }

@@ -15,13 +15,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[GQL\Type]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const LOGIN_MIN_LENGTH = 4;
+    public const LOGIN_MAX_LENGTH = 180;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[GQL\Field]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: self::LOGIN_MAX_LENGTH)]
     #[GQL\Field]
     private ?string $login = null;
 

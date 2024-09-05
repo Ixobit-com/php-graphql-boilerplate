@@ -51,7 +51,7 @@ class UserMutationService extends BaseGraphQLService
                 in_array(FullRole::ROLE_SUPERADMIN, $roles)
                 or (
                     // additional check (is the current user is organization admin and updated user from his organization
-                    in_array(ExtendedRole::ROLE_ORGANIZATION_ADMIN, $roles) and true
+                    in_array(ExtendedRole::ROLE_ADMIN, $roles) and true
                 )
                 // user update himself
                 or $this->security->getUser()->getUserIdentifier() === $user_entity->getUserIdentifier()

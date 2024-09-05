@@ -12,17 +12,23 @@ use Overblog\GraphQLBundle\Annotation as GQL;
 #[GQL\Type]
 class Profile
 {
+    public const FIRST_NAME_MIN_LENGTH = 2;
+    public const FIRST_NAME_MAX_LENGTH = 255;
+    public const LAST_NAME_MIN_LENGTH  = 2;
+    public const LAST_NAME_MAX_LENGTH  = 255;
+    public const EMAIL_LENGTH          = 255;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: self::FIRST_NAME_MAX_LENGTH)]
     #[GQL\Field]
     #[GQL\Description("User's first name")]
     private ?string $first_name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: self::LAST_NAME_MAX_LENGTH)]
     #[GQL\Field]
     #[GQL\Description("User's last name")]
     private ?string $last_name = null;
@@ -31,7 +37,7 @@ class Profile
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: self::EMAIL_LENGTH)]
     #[GQL\Field]
     #[GQL\Description("User's email")]
     private ?string $email = null;

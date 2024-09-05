@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\GraphQL\User;
 
-use App\Entity\GraphQL\DTO\paginationInputDTO;
+use App\Entity\GraphQL\DTO\Common\paginationInputDTO;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Overblog\GraphQLBundle\Annotation as GQL;
