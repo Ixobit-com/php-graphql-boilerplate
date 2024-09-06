@@ -14,6 +14,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            pattern: ^/api
+            stateless: true
             jwt: ~
             lazy: true
             provider: app_user_provider
@@ -26,7 +28,6 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
     role_hierarchy:
-        ROLE_DRIVER:                ROLE_USER
         ROLE_ORGANIZATION_ADMIN:    ROLE_USER
         ROLE_SUPERADMIN:            [ROLE_ORGANIZATION_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 

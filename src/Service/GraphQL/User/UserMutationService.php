@@ -9,16 +9,34 @@ use App\Entity\GraphQL\Role\ExtendedRole;
 use App\Entity\GraphQL\Role\FullRole;
 use App\Entity\RefreshToken;
 use App\Entity\User;
+use App\Service\DTO\DTOService;
 use App\Service\GraphQL\BaseGraphQLService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\Mapping\MappingException;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'UserMutation')]
 class UserMutationService extends BaseGraphQLService
 {
+    public function __construct(
+        protected readonly EntityManagerInterface $entityManager,
+        protected readonly Security $security,
+        protected LoggerInterface $logger,
+        private readonly RoleHierarchyInterface $roleHierarchy,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly DTOService $DTOService,
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Update basic user info.
      *  - login
@@ -26,19 +44,22 @@ class UserMutationService extends BaseGraphQLService
      *  - profile info.
      *
      * @throws \ReflectionException
+     * @throws MappingException
      */
     #[GQL\Field(type: 'User')]
     #[GQL\Access("isGranted('USER_UPDATE')")]
-    #[GQL\Arg(name: 'id', type: 'ID!')]
+    #[GQL\Arg(name: 'login', type: 'String!')]
     #[GQL\Arg(name: 'user', type: 'userUpdateInputDTO')]
-    public function userUpdate(int $id, userUpdateInputDTO $user): User
+    public function userUpdate(string $login, userUpdateInputDTO $user): User
     {
-        $user_entity = $this->entityManager->getRepository(User::class)->find($id);
+        $user_entity = $this->entityManager->getRepository(User::class)->findOneBy([
+            'login' => $login,
+        ]);
         if (!$user_entity instanceof User) {
             $this->logger->error(
                 sprintf(
-                    'userUpdate: User #%s not found',
-                    $id
+                    "userUpdate: User '%s' not found",
+                    $login
                 )
             );
             throw new EntityNotFoundException('User not found');
@@ -49,22 +70,20 @@ class UserMutationService extends BaseGraphQLService
             !(
                 // Superadmin has full access
                 in_array(FullRole::ROLE_SUPERADMIN, $roles)
-                or (
-                    // additional check (is the current user is organization admin and updated user from his organization
-                    in_array(ExtendedRole::ROLE_ADMIN, $roles) and true
-                )
+                // admin with USER_UPDATE permissions
+                or in_array(ExtendedRole::ROLE_ADMIN, $roles)
                 // user update himself
                 or $this->security->getUser()->getUserIdentifier() === $user_entity->getUserIdentifier()
             )
         ) {
             $this->logger->error(
                 sprintf(
-                    "User '%s' has not access rights to update user #%i",
+                    "User '%s' has not access rights to update user '%s'",
                     $this->security->getUser()->getUserIdentifier(),
-                    $id
+                    $login
                 )
             );
-            throw new AccessDeniedException(sprintf("User '%s' has not access rights to update user #%i", $this->security->getUser()->getUserIdentifier(), $id));
+            throw new AccessDeniedException(sprintf("User '%s' has not access rights to update user %s", $this->security->getUser()->getUserIdentifier(), $login));
         }
 
         if (!empty($user->password)) { // hash new password
@@ -84,7 +103,17 @@ class UserMutationService extends BaseGraphQLService
             );
         }
 
-        $this->DTOService->hydrateEntityFromDTO($user, $user_entity); // Validation inside
+        $this->DTOService->hydrateEntityFromDTO($user, $user_entity, [
+            'login'    => ['property' => 'Login'],
+            'password' => ['property' => 'Password'],
+            'profile'  => ['property' => 'Profile',
+                'map'                 => [
+                    'first_name' => ['property' => 'FirstName'],
+                    'last_name'  => ['property' => 'LastName'],
+                    'email'      => ['property' => 'Email'],
+                ],
+            ],
+        ]);
 
         $this->entityManager->persist($user_entity);
         $this->entityManager->flush();

@@ -26,13 +26,18 @@ class AccessVoter extends Voter
     {
         /** @var UserInterface $user */
         $user  = $token->getUser();
+
+        if (!$user instanceof UserInterface) {
+            return false;
+        }
+
         $roles = $this->roleHierarchy->getReachableRoleNames($user->getRoles()); // Get all roles by hierarchy
 
         $allowed_actions = [];
         foreach ($roles as $role) {
             if (FullRole::ROLE_SUPERADMIN === $role) {
-                return true;
-            } // ROLE_SUPERADMIN have access for all actions
+                return true; // ROLE_SUPERADMIN have access for all actions
+            }
             $allowed_actions = array_merge($allowed_actions, Actions::$actions[$role]);
         }
         $allowed_actions = array_unique($allowed_actions);

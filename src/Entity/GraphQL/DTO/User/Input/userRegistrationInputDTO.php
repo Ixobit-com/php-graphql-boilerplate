@@ -31,15 +31,8 @@ class userRegistrationInputDTO extends BaseDTO
     public string $login;
 
     #[GQL\InputField(type: 'String')]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'user.password.required', allowNull: false)]
     public string $password;
-
-    #[GQL\InputField(type: '[String]')]
-    #[Assert\NotBlank]
-    #[Assert\All([
-        new Assert\Choice(callback: 'getRoles', message: 'role.not.allowed'),
-    ])]
-    public array $roles;
 
     #[GQL\InputField(type: 'profileCreateInputDTO')]
     #[Assert\Valid]

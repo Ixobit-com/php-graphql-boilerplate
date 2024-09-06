@@ -13,8 +13,7 @@ class DTOTest extends KernelTestCase
 
     public function setUp(): void
     {
-        $kernel            = self::bootKernel();
-        // $this->validator   = $kernel->getContainer()->get('debug.validator.test');
+        $kernel = self::bootKernel();
         parent::setUp();
     }
 

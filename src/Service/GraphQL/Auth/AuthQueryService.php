@@ -11,13 +11,20 @@ use App\Entity\GraphQL\DTO\Auth\Output\refreshResponseDTO;
 use App\Entity\RefreshToken;
 use App\Entity\User;
 use App\Service\GraphQL\BaseGraphQLService;
+use Doctrine\ORM\EntityManagerInterface;
+use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
 use Gesdinet\JWTRefreshTokenBundle\Security\Exception\InvalidTokenException;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Monolog\Attribute\WithMonologChannel;
 use Overblog\GraphQLBundle\Annotation as GQL;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'AuthQuery')]
@@ -25,10 +32,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[WithMonologChannel('security')]
 class AuthQueryService extends BaseGraphQLService
 {
+    public function __construct(
+        protected readonly EntityManagerInterface $entityManager,
+        protected UserPasswordHasherInterface $passwordHasher,
+        protected JWTTokenManagerInterface $JWTManager,
+        protected LoggerInterface $logger,
+        protected RefreshTokenGeneratorInterface $refreshTokenGenerator,
+        protected ParameterBagInterface $configuration,
+        protected TranslatorInterface $translator,
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Authorization.
      * Provide JWT token and JWT refresh token by login/password combination.
-     * If refresh token exists and valid - use it, if not - generate new.
      */
     #[GQL\Field(type: 'loginResponseDTO')]
     #[GQL\Arg(name: 'loginInfo', type: 'loginInputDTO')]
