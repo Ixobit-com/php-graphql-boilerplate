@@ -9,8 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class DTOTest extends KernelTestCase
 {
-    // protected ?ValidatorInterface $validator;
-
     public function setUp(): void
     {
         $kernel = self::bootKernel();

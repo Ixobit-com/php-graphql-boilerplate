@@ -1,3 +1,6 @@
+parameters:
+    app.api_url: '%env(API_URL)%'
+
 services:
     debug.validator.test:
         alias: 'debug.validator'

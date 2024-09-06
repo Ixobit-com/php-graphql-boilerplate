@@ -4,29 +4,27 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Auth;
 
+use App\DataFixtures\UserFixtures;
 use App\Entity\GraphQL\DTO\User\Input\profileCreateInputDTO;
 use App\Entity\GraphQL\DTO\User\Input\userRegistrationInputDTO;
-use App\Entity\GraphQL\Role\BaseRole;
-use App\Entity\GraphQL\Role\FullRole;
-use App\Entity\User;
-use App\Service\GraphQL\Auth\AuthMutationService;
+use App\Tests\Service\BaseServiceWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use PHPUnit\Framework\Constraint\RegularExpression;
 
-class AuthMutationServiceTest extends KernelTestCase
+class AuthMutationServiceTest extends BaseServiceWebTestCase
 {
-    protected ?AuthMutationService $authService;
-    protected ?ValidatorInterface $validator;
-    protected ?UserPasswordHasher $hasher;
+    private const auth_registration = <<<EOD
+mutation userRegistration(\$user: userRegistrationInputDTO!)
+{
+    userRegistration(user: \$user) {
+        id
+        login
+    }
+}
+EOD;
 
     public function setUp(): void
     {
-        $kernel            = self::bootKernel();
-        $this->authService = $kernel->getContainer()->get(AuthMutationService::class);
-        $this->validator   = $kernel->getContainer()->get('debug.validator.test');
-        $this->hasher      = $kernel->getContainer()->get('security.user_password_hasher.test');
         parent::setUp();
     }
 
@@ -34,119 +32,58 @@ class AuthMutationServiceTest extends KernelTestCase
      * @throws \ReflectionException
      */
     #[DataProvider('provideRegistrationData')]
-    public function testAuthMutationService(
-        $login,
-        $password,
-        $roles,
-        $profile,
-        $expectedException,
+    public function testUserRegistration(
+        $variables,
         $expectedErrors,
     ): void {
-        $this->assertInstanceOf(AuthMutationService::class, $this->authService);
+        $this->call('auth', [
+            'query'     => self::auth_registration,
+            'variables' => json_encode($variables),
+        ]
+        );
 
-        $dto           = new userRegistrationInputDTO();
-        $dto->login    = $login;
-        $dto->password = $password;
-        $dto->roles    = $roles;
-        $dto->profile  = $profile();
-
-        // In the real environment - validation supports by GraphQL library (before service call)
-        $errors = $this->validator->validate($dto);
-
-        if (count($errors) > 0) {
-            foreach ($errors as $error) {
-                $this->assertContains(get_class($error->getConstraint()), $expectedErrors);
-            }
-        }
-
-        try {
-            $user = $this->authService->userRegistration($dto);
-
-            if (0 == count($errors)) {
-                $this->assertInstanceOf(User::class, $user);
-                $this->assertEquals($login, $user->getLogin());
-                $this->assertTrue($this->hasher->isPasswordValid($user, $password));
-                $this->assertEquals($roles, $user->getRoles());
-
-                $this->assertEquals($dto->profile->first_name, $user->getProfile()->getFirstName());
-                $this->assertEquals($dto->profile->last_name, $user->getProfile()->getLastName());
-                $this->assertEquals($dto->profile->email, $user->getProfile()->getEmail());
-            }
-        } catch (\Throwable $e) {
-            $this->assertEquals($expectedException, get_class($e));
-        }
+        $this->analyzeResponseErrors(
+            json_decode($this->client->getResponse()->getContent()),
+            $expectedErrors,
+        );
     }
 
     public static function provideRegistrationData(): iterable
     {
-        yield 'dto.not_unique_login' => [
-            'login'     => 'admin',
-            'password'  => 'password',
-            'roles'     => [BaseRole::ROLE_USER],
-            'profile'   => function (): profileCreateInputDTO {
-                $profile             = new profileCreateInputDTO();
-                $profile->email      = 'valid@email.com';
-                $profile->first_name = 'FirstName';
-                $profile->last_name  = 'LastName';
-
-                return $profile;
-            },
-            'expectedException'  => 'Doctrine\DBAL\Exception\UniqueConstraintViolationException',
+        yield 'registration.valid' => [
+            'variables' => ['user' => new userRegistrationInputDTO(
+                [
+                    'login'     => 'newuserlogin',
+                    'password'  => 'password',
+                    'profile'   => new profileCreateInputDTO([
+                        'email'      => 'valid@email.com',
+                        'first_name' => 'FirstName',
+                        'last_name'  => 'LastName',
+                    ]),
+                ]
+            ),
+            ],
             'expectedErrors'     => [],
         ];
 
-        yield 'dto.not_valid_email_and_password' => [
-            'login'     => 'new_driver',
-            'password'  => '',
-            'roles'     => [BaseRole::ROLE_USER],
-            'profile'   => function (): profileCreateInputDTO {
-                $profile             = new profileCreateInputDTO();
-                $profile->email      = 'not_valid_email';
-                $profile->first_name = 'FirstName';
-                $profile->last_name  = 'LastName';
-
-                return $profile;
-            },
-            'expectedException'  => '',
-            'expectedErrors'     => ['Symfony\Component\Validator\Constraints\Email', 'Symfony\Component\Validator\Constraints\NotBlank'],
+        yield 'registration.login_already_exists-password-required' => [
+            'variables' => ['user' => new userRegistrationInputDTO(
+                [
+                    'login'     => UserFixtures::DEFAULT_USER_LOGIN,
+                    'password'  => '',
+                    'profile'   => new profileCreateInputDTO([
+                        'email'      => 'invalid_email_com',
+                        'first_name' => 'FirstName',
+                        'last_name'  => 'LastName',
+                    ]),
+                ]
+            ),
+            ],
+            'expectedErrors' => [
+                new RegularExpression('/Login ".*" already exists/'),
+                new RegularExpression('/Password is required/'),
+                new RegularExpression('/Provided email ".*" is not valid email address/'),
+            ],
         ];
-
-        yield 'dto.not_valid_role' => [
-            'login'     => 'new_driver',
-            'password'  => 'password',
-            'roles'     => [FullRole::ROLE_SUPERADMIN],
-            'profile'   => function (): profileCreateInputDTO {
-                $profile             = new profileCreateInputDTO();
-                $profile->email      = 'valid@email.com';
-                $profile->first_name = 'FirstName';
-                $profile->last_name  = 'LastName';
-
-                return $profile;
-            },
-            'expectedException'  => '',
-            'expectedErrors'     => ['Symfony\Component\Validator\Constraints\Choice'],
-        ];
-
-        yield 'dto.valid_user' => [
-            'login'     => 'new_driver',
-            'password'  => 'password',
-            'roles'     => [BaseRole::ROLE_USER],
-            'profile'   => function (): profileCreateInputDTO {
-                $profile             = new profileCreateInputDTO();
-                $profile->email      = 'valid@email.com';
-                $profile->first_name = 'FirstName';
-                $profile->last_name  = 'LastName';
-
-                return $profile;
-            },
-            'expectedException'  => '',
-            'expectedErrors'     => [],
-        ];
-    }
-
-    public function tearDown(): void
-    {
-        restore_exception_handler(); // some vendor(s) forgot to reset exception handler...
-        parent::tearDown();
     }
 }

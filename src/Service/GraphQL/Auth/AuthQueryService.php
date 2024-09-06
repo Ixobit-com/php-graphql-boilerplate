@@ -10,7 +10,6 @@ use App\Entity\GraphQL\DTO\Auth\Output\loginResponseDTO;
 use App\Entity\GraphQL\DTO\Auth\Output\refreshResponseDTO;
 use App\Entity\RefreshToken;
 use App\Entity\User;
-use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
@@ -30,7 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[GQL\Type(name: 'AuthQuery')]
 #[GQL\Access("hasRole('PUBLIC_ACCESS')")]
 #[WithMonologChannel('security')]
-class AuthQueryService extends BaseGraphQLService
+class AuthQueryService
 {
     public function __construct(
         protected readonly EntityManagerInterface $entityManager,
@@ -41,7 +40,6 @@ class AuthQueryService extends BaseGraphQLService
         protected ParameterBagInterface $configuration,
         protected TranslatorInterface $translator,
     ) {
-        parent::__construct();
     }
 
     /**

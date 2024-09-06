@@ -8,7 +8,6 @@ use App\Entity\GraphQL\DTO\User\Input\userRegistrationInputDTO;
 use App\Entity\GraphQL\Role\BaseRole;
 use App\Entity\User;
 use App\Service\DTO\DTOService;
-use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityManagerInterface;
 use Overblog\GraphQLBundle\Annotation as GQL;
 use Overblog\GraphQLBundle\Error\UserError;
@@ -20,7 +19,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Autoconfigure(public: true)]
 #[GQL\Type(name: 'AuthMutation')]
 #[GQL\Access("hasRole('PUBLIC_ACCESS')")]
-class AuthMutationService extends BaseGraphQLService
+class AuthMutationService
 {
     public function __construct(
         protected readonly EntityManagerInterface $entityManager,
@@ -29,7 +28,6 @@ class AuthMutationService extends BaseGraphQLService
         protected UserPasswordHasherInterface $passwordHasher,
         protected TranslatorInterface $translator,
     ) {
-        parent::__construct();
     }
 
     /**
