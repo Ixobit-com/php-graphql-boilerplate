@@ -23,14 +23,19 @@ Simple template for quick start GraphQl API
 * Copy .docker/.env.dist to .docker/.env (`cp .docker/.env.dist .docker/.env`)
 * Set required variables (UID, GID etc.) in .env
 * Run ./start.sh
+* Add ./docker/nginx/ssl/rootCA.crt into trusted authorities in your browser. (Now you have HTTPS for *.local domains).
 
 ## Installation
 * deploy as ordinary Symfony project
 * setup commands:
-  * `doctrine:migrations:migrate` (add --env=test for test environment)
-  * `doctrine:fixtures:load` (add --env=test for test environment)
+  * `cp .env .env.local` or `cp .env.docker .env.local` for docker environment
+  * `cp .env.test.docker .env.test.local` for tests in docker environment
+  * Edit .env.local, .env.test.local as you wish.
+  * `composer install`
+  * `./bin/console doctrine:migrations:migrate` (add --env=test for test environment)
+  * `./bin/console doctrine:fixtures:load` (add --env=test for test environment)
      Password for all users is: "password", predefined users are: user, admin, superadmin
-  * `lexik:jwt:generate-keypair`
+  * `./bin/console lexik:jwt:generate-keypair`
 
 ## Configuration
 * GraphQL's library settings: `config/packages/graphql.yaml`

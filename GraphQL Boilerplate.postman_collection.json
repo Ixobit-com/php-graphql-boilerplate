@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "f8ca1c85-a8a3-4d0f-bd54-2cc4923290a7",
+		"name": "GraphQL Boilerplate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16670510"
+	},
+	"item": [
+		{
+			"name": "auth (login)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query login($loginInfo: loginInputDTO!) {\n    login(loginInfo: $loginInfo) {\n        user {\n            id\n            login\n        }\n        token\n        refresh_token\n    }\n}",
+						"variables": "{\n    \"loginInfo\": {\n        \"login\": \"admin\",\n        \"password\": \"password\"\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}/graphql/auth",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"graphql",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth (refresh)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query refresh($refreshInfo: refreshInputDTO!) {\n    refresh(refreshInfo: $refreshInfo) {\n        token\n        refresh_token\n    }\n}",
+						"variables": "{\n    \"refreshInfo\" : {\n        \"refresh_token\": \"3e31c4fbd9e54435bcedda233513b30205e6000c843c6027080a6923e2f2b386b3207e81fec4be21191a7a5b6181bff72e24c1aec1dbdfa5dda04399373c8654\"\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}/graphql/auth",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"graphql",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth (registration)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation userRegistration($user: userRegistrationInputDTO!)\n{\n    userRegistration(user: $user) {\n        id\n        login\n        roles\n        profile {\n            first_name\n            last_name\n            email\n        }\n    }\n}",
+						"variables": "{\n    \"user\": {\n        \"login\": \"newadmin\",\n        \"password\": \"password\",\n        \"profile\": {\n            \"first_name\": \"Joe\",\n            \"last_name\": \"Doe\",\n            \"email\": \"user_example.com\"\n        }\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}/graphql/auth",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"graphql",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user (user)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query getUserInfo {\n    user {\n        id\n        login\n        roles\n        profile {\n            first_name\n            last_name\n            email\n        }\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{url}}/graphql/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"graphql",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user (users)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query getUserInfo($pagination: paginationInputDTO) {\n    users(pagination: $pagination) {\n        id\n        login\n        roles\n        profile {\n            first_name\n            last_name\n            email\n        }\n    }\n}",
+						"variables": "{\n    \"pagination\": {\n        \"limit\": 10,\n        \"offset\": 0\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}/graphql/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"graphql",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user (update)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation updateUser($login: String!, $user: userUpdateInputDTO!)\n{\n    userUpdate(login: $login, user: $user) {\n        profile {\n            name: first_name\n            last_name\n            email: email\n        }\n    }\n}",
+						"variables": "{\n    \"login\": \"admin\",\n    \"user\": {\n        \"profile\": {\n            \"email\": \"newuser@dom.com\"\n        }\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}/graphql/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"graphql",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

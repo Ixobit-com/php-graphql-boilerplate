@@ -61,10 +61,10 @@ EOD;
                 )],
             'expectedErrors'     => [],
             'analyzers'          => [
-                    function (\stdClass $response) {
-                        return 'new-email@example.com' === $response->data->userUpdate->profile->email;
-                    },
-                ],
+                function (\stdClass $response) {
+                    return 'new-email@example.com' === $response->data->userUpdate->profile->email;
+                },
+            ],
         ];
         yield 'user-update.change-login' => [
             'login'     => UserFixtures::DEFAULT_USER_LOGIN,
@@ -72,7 +72,7 @@ EOD;
                 'login'    => UserFixtures::DEFAULT_USER_LOGIN,
                 'userInfo' => new userUpdateInputDTO(
                     [
-                        'login' => 'newlogin',
+                        'login'      => 'newlogin',
                         'password'   => 'newpassword',
                     ]
                 )],
