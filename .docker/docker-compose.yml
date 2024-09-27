@@ -46,18 +46,9 @@ services:
     environment:
       PHP_IDE_CONFIG: "serverName=Docker"
       XDEBUG_MODE: "debug"
-      XDEBUG_CONFIG: "client_host=${HOST_IP} client_port=${XDEBUG_CLIENT_PORT}"
-
-  nodejs:
-    image: node:lts-alpine
-    container_name: nodejs
-    working_dir: /var/www/html
-    volumes:
-      - ../:/var/www/html
-      - ./nginx/ssl/:/usr/local/share/ca-certificates
-    networks:
-      - network
-    user: "${USER_ID}:${GROUP_ID}"
+      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=${XDEBUG_CLIENT_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mysql:
     image: mysql:8.0

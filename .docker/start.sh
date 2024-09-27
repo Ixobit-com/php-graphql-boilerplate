@@ -32,11 +32,9 @@ docker compose down
 if [ $? -ne 0 ]; then printf "\n%-120s %s\n" "${txtred}Error${txtrst}"; exit 1; fi
 
 ## Run php-fpm container
-docker compose up --build --remove-orphans -d php-fpm
+docker compose up --build -d php-fpm
 printf "\n%-120s %s\\nn" "PHP-FPM server start [${txtgrn}Ok${txtrst}]"
 
-#echo "$(docker network inspect ${COMPOSE_PROJECT_NAME}_${NETWORK_NAME})"; # --format='{{range .Containers}}{{if eq .Name "nginx"}}{{ .IPv4Address }}{{end}}{{end}}')"
-#exit 0;
 ## Run MySQL container
 docker compose up --build -d mysql
 printf "%-120s %s\n\n" "Starting MySQL server"

@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Get configuration parameters
-source ../../.env
+source .env.dist
 cp v3.ext.default v3.ext
 
 if [ -z "$HOSTS" ]; then echo 'ERROR: No hosts configured into .env file'; exit 1; fi; 
