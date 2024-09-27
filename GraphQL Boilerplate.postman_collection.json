@@ -74,7 +74,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "mutation userRegistration($user: userRegistrationInputDTO!)\n{\n    userRegistration(user: $user) {\n        id\n        login\n        roles\n        profile {\n            first_name\n            last_name\n            email\n        }\n    }\n}",
-						"variables": "{\n    \"user\": {\n        \"login\": \"newadmin\",\n        \"password\": \"password\",\n        \"profile\": {\n            \"first_name\": \"Joe\",\n            \"last_name\": \"Doe\",\n            \"email\": \"user_example.com\"\n        }\n    }\n}"
+						"variables": "{\n    \"user\": {\n        \"login\": \"newadmin\",\n        \"password\": \"password\",\n        \"profile\": {\n            \"first_name\": \"Joe\",\n            \"last_name\": \"Doe\",\n            \"email\": \"user@example.com\"\n        }\n    }\n}"
 					}
 				},
 				"url": {
@@ -143,7 +143,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query getUserInfo($pagination: paginationInputDTO) {\n    users(pagination: $pagination) {\n        id\n        login\n        roles\n        profile {\n            first_name\n            last_name\n            email\n        }\n    }\n}",
+						"query": "query getUserInfo($pagination: paginationInputDTO) {\n    users(pagination: $pagination) {\n        users {\n            id\n            login\n            roles\n            profile {\n                first_name\n                last_name\n                email\n            }\n        },\n        limit\n        offset\n        total\n    }\n}",
 						"variables": "{\n    \"pagination\": {\n        \"limit\": 10,\n        \"offset\": 0\n    }\n}"
 					}
 				},
@@ -179,7 +179,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "mutation updateUser($login: String!, $user: userUpdateInputDTO!)\n{\n    userUpdate(login: $login, user: $user) {\n        profile {\n            name: first_name\n            last_name\n            email: email\n        }\n    }\n}",
-						"variables": "{\n    \"login\": \"admin\",\n    \"user\": {\n        \"profile\": {\n            \"email\": \"newuser@dom.com\"\n        }\n    }\n}"
+						"variables": "{\n    \"login\": \"newadmin\",\n    \"user\": {\n        \"login\": \"newuser2\"\n    }\n}"
 					}
 				},
 				"url": {

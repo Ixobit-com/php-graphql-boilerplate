@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\GraphQL\User;
 
 use App\Entity\GraphQL\DTO\Common\paginationInputDTO;
+use App\Entity\GraphQL\DTO\User\Output\usersOutputDTO;
 use App\Entity\User;
 use App\Service\GraphQL\BaseGraphQLService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,11 +32,18 @@ class UserQueryService extends BaseGraphQLService
         return $this->entityManager->getRepository(User::class)->findOneBy(['login' => $this->user->getUserIdentifier()]);
     }
 
-    #[GQL\Field(type: '[User]')]
+    #[GQL\Field(type: 'usersOutputDTO')]
     #[GQL\Arg(name: 'pagination', type: 'paginationInputDTO')]
     #[GQL\Access("isGranted('GET_USERS_LIST')")]
-    public function users(paginationInputDTO $pagination): array
+    public function users(paginationInputDTO $pagination): usersOutputDTO
     {
-        return $this->entityManager->getRepository(User::class)->findBy([], [], $pagination->limit, $pagination->offset);
+        return new usersOutputDTO(
+            [
+                'users'  => $this->entityManager->getRepository(User::class)->findBy([], [], $pagination->limit, $pagination->offset),
+                'limit'  => $pagination->limit,
+                'offset' => $pagination->offset,
+                'total'  => $this->entityManager->getRepository(User::class)->count([]),
+            ]
+        );
     }
 }
