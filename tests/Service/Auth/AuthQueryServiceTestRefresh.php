@@ -7,6 +7,7 @@ namespace App\Tests\Service\Auth;
 use App\DataFixtures\UserFixtures;
 use App\Entity\GraphQL\DTO\Auth\Input\refreshInputDTO;
 use App\Entity\RefreshToken;
+use App\Tests\Service\Auth\DataProviders\refreshDataProvider;
 use App\Tests\Service\BaseServiceWebTestCase;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,14 +16,8 @@ use PHPUnit\Framework\Constraint\RegularExpression;
 class AuthQueryServiceTestRefresh extends BaseServiceWebTestCase
 {
     private ?EntityManager $entityManager;
-    private const auth_refresh_query = <<<EOD
-query refresh(\$refreshInfo: refreshInputDTO!) {
-    refresh(refreshInfo: \$refreshInfo) {
-        token
-        refresh_token
-    }
-}
-EOD;
+
+    use refreshDataProvider;
 
     public function setUp(): void
     {
@@ -77,18 +72,4 @@ EOD;
         );
     }
 
-    public static function provideRefreshData(): iterable
-    {
-        yield 'refresh.valid' => [
-            'variables' => ['refreshInfo' => new refreshInputDTO(
-                [
-                    'refresh_token' => 'example-refresh-token',
-                ]
-            )],
-            'expectedErrors'     => [
-                new RegularExpression('/Invalid refresh token/'),
-            ],
-            'analyzers'          => [],
-        ];
-    }
 }
