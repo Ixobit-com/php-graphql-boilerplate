@@ -16,6 +16,7 @@ class UserMutationServiceTest extends BaseServiceWebTestCase
 mutation updateUser(\$login: String!, \$user: userUpdateInputDTO!)
 {
     userUpdate(login: \$login, user: \$user) {
+        login
         profile {
             first_name
             last_name
@@ -31,12 +32,11 @@ EOD;
         $variables,
         $expectedErrors,
         $analyzers
-    ): void
-    {
+    ): void {
         $this->loginAs($login);
         $this->call('user', [
             'query'     => self::user_mutation,
-            'variables' => '{ "login":"'.$variables['login'].'", "user": '.$variables['userInfo']->toJson().' }'
+            'variables' => '{ "login":"'.$variables['login'].'", "user": '.$variables['userInfo']->toJson().' }',
         ]);
 
         $response = json_decode($this->client->getResponse()->getContent());
@@ -49,23 +49,39 @@ EOD;
         yield 'user-update.valid' => [
             'login'     => UserFixtures::DEFAULT_USER_LOGIN,
             'variables' => [
-                'login' => UserFixtures::DEFAULT_USER_LOGIN,
+                'login'    => UserFixtures::DEFAULT_USER_LOGIN,
                 'userInfo' => new userUpdateInputDTO(
-                [
-                    'profile'   => new profileUpdateInputDTO(
-                        [
-                            'email' => 'new-email@example.com'
-                        ]
-                    )
-                ]
-            )],
+                    [
+                        'profile'   => new profileUpdateInputDTO(
+                            [
+                                'email' => 'new-email@example.com',
+                            ]
+                        ),
+                    ]
+                )],
+            'expectedErrors'     => [],
+            'analyzers'          => [
+                    function (\stdClass $response) {
+                        return 'new-email@example.com' === $response->data->userUpdate->profile->email;
+                    },
+                ],
+        ];
+        yield 'user-update.change-login' => [
+            'login'     => UserFixtures::DEFAULT_USER_LOGIN,
+            'variables' => [
+                'login'    => UserFixtures::DEFAULT_USER_LOGIN,
+                'userInfo' => new userUpdateInputDTO(
+                    [
+                        'login' => 'newlogin',
+                        'password'   => 'newpassword',
+                    ]
+                )],
             'expectedErrors'     => [],
             'analyzers'          => [
                 function (\stdClass $response) {
-                    return $response->data->userUpdate->profile->email === 'new-email@example.com';
+                    return 'newlogin' === $response->data->userUpdate->login;
                 },
-            ]
+            ],
         ];
     }
-
 }

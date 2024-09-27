@@ -19,15 +19,21 @@ Simple template for quick start GraphQl API
 * MySQL 8
 * composer
 
+## Docker environment (optional)
+* Copy .docker/.env.dist to .docker/.env (`cp .docker/.env.dist .docker/.env`)
+* Set required variables (UID, GID etc.) in .env
+* Run ./start.sh
+
 ## Installation
 * deploy as ordinary Symfony project
 * setup commands:
-  * `doctrine:migrations:migrate`
-  * `doctrine:fixtures:load` (all users password is: "password", predefined users are: admin, superadmin)
+  * `doctrine:migrations:migrate` (add --env=test for test environment)
+  * `doctrine:fixtures:load` (add --env=test for test environment)
+     Password for all users is: "password", predefined users are: user, admin, superadmin
   * `lexik:jwt:generate-keypair`
 
 ## Configuration
-* GraphQL library settings: `config/packages/graphql.yaml`
+* GraphQL's library settings: `config/packages/graphql.yaml`
 * Settings format: Attributes (https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/index.md)
 * API scheme divide by logical parts. Any part have dedicated entry point (`/api/graphql/<schema>`). I.e. `/api/graphql/user`.
 * Queries and Mutations realized as Symfony service and placed in `src/Service/GraphQL`.
@@ -40,6 +46,13 @@ Simple template for quick start GraphQl API
 * Basic access rights can be checked by framework using Symfony security mechanism (https://symfony.com/doc/current/security.html).
 * On the API level security checking use GraphQL bundle "#[Access]" attribute (https://github.com/overblog/GraphQLBundle/blob/master/docs/attributes/attributes-reference.md#access)
 * Validation in DTO implements utilise #[Assert] Symfony validation mechanism (https://symfony.com/doc/current/validation.html) 
+
+## Tests
+* Run `composer test` for tests
+* Coverage report will be generated in public/coverage/index.html
+
+## Code style
+* Use `composer phpcs` for code style check and fix.
 
 ## Links
 https://github.com/overblog/GraphQLBundle \

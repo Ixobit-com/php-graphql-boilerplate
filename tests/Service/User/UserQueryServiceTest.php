@@ -36,12 +36,11 @@ EOD;
         $variables,
         $expectedErrors,
         $analyzers
-    ): void
-    {
+    ): void {
         $this->loginAs($variables['loginInfo']->login);
         $this->call('user', [
             'query'     => self::user_query,
-            'variables' => ''
+            'variables' => '',
         ]);
 
         $response = json_decode($this->client->getResponse()->getContent());
@@ -61,10 +60,9 @@ EOD;
             'expectedErrors'     => [],
             'analyzers'          => [
                 function (\stdClass $response) {
-                    return $response->data->user->login === UserFixtures::DEFAULT_USER_LOGIN;
+                    return UserFixtures::DEFAULT_USER_LOGIN === $response->data->user->login;
                 },
-            ]
+            ],
         ];
     }
-
 }

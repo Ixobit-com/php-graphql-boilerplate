@@ -53,7 +53,6 @@ EOD;
         );
 
         $this->analyzeResponse($response, $analyzers);
-
     }
 
     public static function provideLoginData(): iterable
@@ -68,12 +67,12 @@ EOD;
             'expectedErrors'     => [],
             'analyzers'          => [
                 function (\stdClass $response) {
-                    return $response->data->login->user->login === UserFixtures::DEFAULT_USER_LOGIN;
+                    return UserFixtures::DEFAULT_USER_LOGIN === $response->data->login->user->login;
                 },
                 function (\stdClass $response) {
                     return !empty($response->data->login->token);
                 },
-            ]
+            ],
         ];
 
         yield 'login.invalid' => [
@@ -84,9 +83,9 @@ EOD;
                 ]
             )],
             'expectedErrors' => [
-                new RegularExpression('/Invalid credentials/')
+                new RegularExpression('/Invalid credentials/'),
             ],
-            'analyzers'          => []
+            'analyzers'          => [],
         ];
     }
 }

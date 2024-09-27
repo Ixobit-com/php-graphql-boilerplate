@@ -43,11 +43,12 @@ class BaseServiceWebTestCase extends WebTestCase
         $jsonResponse = json_decode($this->client->getResponse()->getContent());
         if (isset($jsonResponse->data->login->token)) {
             $this->client->setServerParameter('HTTP_Authorization', 'Bearer '.$jsonResponse->data->login->token);
+
             return $jsonResponse;
         }
+
         return $jsonResponse;
     }
-
 
     protected function analyzeResponse(\stdClass $response, array $responseAnalyzers, array $context = []): \stdClass
     {
@@ -59,9 +60,9 @@ class BaseServiceWebTestCase extends WebTestCase
                 );
             }
         }
+
         return $response;
     }
-
 
     /**
      * @param array $expectedErrorMessages

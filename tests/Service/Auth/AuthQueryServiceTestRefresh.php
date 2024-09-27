@@ -14,7 +14,6 @@ use PHPUnit\Framework\Constraint\RegularExpression;
 
 class AuthQueryServiceTestRefresh extends BaseServiceWebTestCase
 {
-
     private ?EntityManager $entityManager;
     private const auth_refresh_query = <<<EOD
 query refresh(\$refreshInfo: refreshInputDTO!) {
@@ -51,11 +50,10 @@ EOD;
         );
 
         $this->analyzeResponse($response, $analyzers);
-
     }
 
-    public function testUserRefreshValid(): void {
-
+    public function testUserRefreshValid(): void
+    {
         $loginResponse = $this->loginAs(UserFixtures::DEFAULT_USER_LOGIN);
 
         $variables = ['refreshInfo' => new refreshInputDTO(
@@ -64,9 +62,9 @@ EOD;
             ]
         )];
         $this->call('auth', [
-                'query'     => self::auth_refresh_query,
-                'variables' => json_encode($variables),
-            ]
+            'query'     => self::auth_refresh_query,
+            'variables' => json_encode($variables),
+        ]
         );
 
         $response = json_decode($this->client->getResponse()->getContent());
@@ -88,9 +86,9 @@ EOD;
                 ]
             )],
             'expectedErrors'     => [
-                new RegularExpression('/Invalid refresh token/')
+                new RegularExpression('/Invalid refresh token/'),
             ],
-            'analyzers'          => []
+            'analyzers'          => [],
         ];
     }
 }
