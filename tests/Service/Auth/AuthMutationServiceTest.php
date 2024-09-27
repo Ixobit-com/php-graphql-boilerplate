@@ -4,17 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Auth;
 
-use App\DataFixtures\UserFixtures;
-use App\Entity\GraphQL\DTO\User\Input\profileCreateInputDTO;
-use App\Entity\GraphQL\DTO\User\Input\userRegistrationInputDTO;
 use App\Tests\Service\Auth\DataProviders\registrationDataProvider;
 use App\Tests\Service\BaseServiceWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Constraint\RegularExpression;
 
 class AuthMutationServiceTest extends BaseServiceWebTestCase
 {
-
     use registrationDataProvider;
 
     public function setUp(): void
@@ -41,5 +36,4 @@ class AuthMutationServiceTest extends BaseServiceWebTestCase
             $expectedErrors,
         );
     }
-
 }

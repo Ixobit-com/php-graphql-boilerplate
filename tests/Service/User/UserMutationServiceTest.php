@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class UserMutationServiceTest extends BaseServiceWebTestCase
 {
-
     use userMutationDataProvider;
 
     #[DataProvider('provideUserData')]
@@ -30,5 +29,4 @@ class UserMutationServiceTest extends BaseServiceWebTestCase
 
         $this->analyzeResponse($response, $analyzers);
     }
-
 }

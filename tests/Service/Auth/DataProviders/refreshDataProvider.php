@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service\Auth\DataProviders;
 
 use App\Entity\GraphQL\DTO\Auth\Input\refreshInputDTO;

@@ -12,6 +12,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class UserQueryServiceTest extends BaseServiceWebTestCase
 {
+    use userQueryDataProvider;
+
+    use usersQueryDataProvider;
     private const user_query = <<<EOD
 query getUserInfo {
     user {
@@ -27,8 +30,6 @@ query getUserInfo {
 }
 EOD;
 
-    use userQueryDataProvider;
-
     #[DataProvider('provideUserData')]
     public function testUser(
         $variables,
@@ -43,9 +44,6 @@ EOD;
         $response = json_decode($this->client->getResponse()->getContent());
         $this->analyzeResponse($response, $analyzers);
     }
-
-
-    use usersQueryDataProvider;
 
     #[DataProvider('provideUsersData')]
     public function testUsers(
@@ -67,5 +65,4 @@ EOD;
         $this->analyzeResponseErrors($response, $expectedErrors);
         $this->analyzeResponse($response, $analyzers, ['pagination' => $pagination]);
     }
-
 }

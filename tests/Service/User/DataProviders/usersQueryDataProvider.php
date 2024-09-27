@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service\User\DataProviders;
 
 use App\DataFixtures\UserFixtures;
@@ -36,10 +38,10 @@ EOD;
                         'login'     => UserFixtures::DEFAULT_USER_LOGIN,
                         'password'  => UserFixtures::DEFAULT_PASSWORD,
                     ]
-                )
+                ),
             ],
             'expectedErrors'     => [
-                'Access denied to this field'
+                'Access denied to this field',
             ],
             'analyzers'          => [],
         ];
@@ -50,14 +52,14 @@ EOD;
                         'login'     => UserFixtures::DEFAULT_ADMIN_LOGIN,
                         'password'  => UserFixtures::DEFAULT_PASSWORD,
                     ]
-                )
+                ),
             ],
             'expectedErrors'     => [],
             'analyzers'          => [
                 function (\stdClass $response, array $context) {
                     return
-                        is_array($response->data->users->users) and
-                        count($response->data->users->users) === $context['pagination']->limit
+                        is_array($response->data->users->users)
+                        and count($response->data->users->users) === $context['pagination']->limit
                     ;
                 },
             ],

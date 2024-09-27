@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service\Auth\DataProviders;
 
 use App\DataFixtures\UserFixtures;
@@ -8,8 +10,6 @@ use PHPUnit\Framework\Constraint\RegularExpression;
 
 trait loginDataProvider
 {
-
-
     protected const auth_login_query = <<<EOD
 query login(\$loginInfo: loginInputDTO!) {
     login(loginInfo: \$loginInfo) {

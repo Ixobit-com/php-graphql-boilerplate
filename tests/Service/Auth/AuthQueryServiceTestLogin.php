@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\Auth;
 
-use App\DataFixtures\UserFixtures;
-use App\Entity\GraphQL\DTO\Auth\Input\loginInputDTO;
 use App\Tests\Service\Auth\DataProviders\loginDataProvider;
 use App\Tests\Service\BaseServiceWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Constraint\RegularExpression;
 
 class AuthQueryServiceTestLogin extends BaseServiceWebTestCase
 {
-
     use loginDataProvider;
 
     /**
@@ -40,5 +36,4 @@ class AuthQueryServiceTestLogin extends BaseServiceWebTestCase
 
         $this->analyzeResponse($response, $analyzers);
     }
-
 }

@@ -11,13 +11,11 @@ use App\Tests\Service\Auth\DataProviders\refreshDataProvider;
 use App\Tests\Service\BaseServiceWebTestCase;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Constraint\RegularExpression;
 
 class AuthQueryServiceTestRefresh extends BaseServiceWebTestCase
 {
-    private ?EntityManager $entityManager;
-
     use refreshDataProvider;
+    private ?EntityManager $entityManager;
 
     public function setUp(): void
     {
@@ -71,5 +69,4 @@ class AuthQueryServiceTestRefresh extends BaseServiceWebTestCase
             ->getRefreshToken()
         );
     }
-
 }

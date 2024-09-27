@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service\User\DataProviders;
 
 use App\DataFixtures\UserFixtures;
@@ -8,7 +10,6 @@ use App\Entity\GraphQL\DTO\User\Input\userUpdateInputDTO;
 
 trait userMutationDataProvider
 {
-
     protected const user_mutation = <<<EOD
 mutation updateUser(\$login: String!, \$user: userUpdateInputDTO!)
 {
