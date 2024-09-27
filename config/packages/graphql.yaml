@@ -1,0 +1,38 @@
+overblog_graphql:
+    security:
+        enable_introspection: '%kernel.debug%'
+    errors_handler:
+        debug: '%kernel.debug%'
+        #...
+        # change to true to try to map an exception to a parent exception if the exact exception is not in
+        # the mapping
+        map_exceptions_to_parent: true
+        internal_error_message: 'Internal GraphQL error occurred'
+        exceptions:
+#            warnings:
+            # move exception message to high level GraphQL output
+            errors:
+                - 'InvalidArgumentException'
+                - 'LogicException'
+                - 'ReflectionException'
+                - 'Gesdinet\JWTRefreshTokenBundle\Security\Exception\InvalidTokenException'
+                - 'Symfony\Component\Security\Core\Exception\AuthenticationException'
+                - 'Symfony\Component\Security\Core\Exception\AccessDeniedException'
+                - 'Symfony\Component\Security\Core\Exception\UnsupportedUserException'
+                - 'Symfony\Component\Validator\Exception\ValidationFailedException'
+                - 'Doctrine\ORM\EntityNotFoundException'
+    definitions:
+        use_classloader_listener: true
+        auto_compile: true
+        schema:
+            auth:
+                query: AuthQuery
+                mutation: AuthMutation
+            user:
+                query: UserQuery
+                mutation: UserMutation
+        mappings:
+            types:
+                - type: attribute
+                  dir: "%kernel.project_dir%/src"
+                  suffix: ~

@@ -1,0 +1,61 @@
+spectaql:
+  logoFile: ./public/documentation/logo.png
+  faviconFile: ./public/documentation/logo.png
+  displayAllServers: true
+#  targetDir: ./public/documentation
+
+
+introspection:
+  removeTrailingPeriodFromDescriptions: false
+#  schemaFile:
+#  metadataFile: ./doc/metadata.json
+#  dynamicExamplesProcessingModule: ./examples/customizations/examples
+  queryNameStrategy: capitalizeFirst
+  fieldExpansionDepth: 2
+
+  spectaqlDirective:
+    enable: true
+
+extensions:
+  graphqlScalarExamples: true
+
+info:
+  title: GraphQL API Reference
+  description: Welcome to the API Documentation!
+#  termsOfService: https://www.example.com/terms
+#  contact:
+#    name: API Support
+#    url: http://www.example.com/support
+#    email: support@example.com
+#  license:
+#    name: Apache 2.0
+#    url: https://www.apache.org/licenses/LICENSE-2.0.html
+#  x-introItems:
+#    - title: Important thing 1
+#      description: Some important stuff we wanted you to know. Supports `markdown`
+# A non-standard array of items to display in your Introduction Area
+#  x-introItems:
+#    # Can be a Title (for the Nav panel) + URL to simply add a link to somewhere
+#    - title: A silly link to our website!
+#      url: http://yoursite.com
+#    # Can be a Title (for the Nav panel) + description (for the Content panel)
+#    - title: Important thing 1
+#      description: Some important stuff we wanted you to know. Supports `markdown`
+#
+#  ##############################################
+#  # Introduction area flags
+#  #
+#
+#  # Set to true to do no Introduction area rendering at all. Supersedes the below options
+#  # Default: false
+#  x-hideIntroduction: false
+#  # Set to true to not render a friendly Welcome section based on the description in this area
+#  # Default: false
+#  x-hideWelcome: false
+#  # Set to true to not render your intro items
+#  # Default: false
+#  x-hideIntroItems: false
+
+servers:
+  - url: https://graphql.local/
+    production: true
