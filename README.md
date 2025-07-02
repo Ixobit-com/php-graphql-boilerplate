@@ -11,6 +11,9 @@ Simple template for quick start GraphQl API
   * User - minimal data - for authentication only
   * Profile - additional user info
   * refresh_tokens - refresh tokens storage
+* Test and code coverage by phpunit
+* Code style checking by phpcs
+* I18N translations for any messages
 
 # System requirements
 * PHP 8.2+
@@ -20,9 +23,10 @@ Simple template for quick start GraphQl API
 * composer
 
 ## Docker environment (optional)
+Docker environment configure for development purposes only, and include some additional tools (like npm, xdebug bash etc...)
 * Copy .docker/.env.dist to .docker/.env (`cp .docker/.env.dist .docker/.env`)
-* Set required variables (UID, GID etc.) in .env
-* Run ./start.sh
+* Set required variables (USER_ID, GROUP_ID, HOSTS etc.) in .env
+* Run ./start.sh (this script start or restart full environment)
 * Add ./docker/nginx/ssl/rootCA.crt into trusted authorities in your browser. (Now you have HTTPS for *.local domains).
 
 ## Installation
@@ -58,6 +62,11 @@ Simple template for quick start GraphQl API
 
 ## Code style
 * Use `composer phpcs` for code style check and fix.
+
+## API Documentation
+* Documentation generate automatically (use `./bin/documentation.sh` script in docker environment)
+* Main page will be accessible at https://graphql.local/documentation/index.html
+* Also, GraphQL schemas in .gql files are stored in the public/schema directory
 
 ## Links
 https://github.com/overblog/GraphQLBundle \

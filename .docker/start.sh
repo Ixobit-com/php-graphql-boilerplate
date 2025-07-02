@@ -9,9 +9,7 @@ txtrst=$(tput sgr0)       # Text reset
 source .env
 
 ## Configure SSL certs for domains in .env
-if ! [ -f ./nginx/ssl/v3.ext ]; then
-  cd ./nginx/ssl/ && ./crt.sh && cd ../../
-fi
+cd ./nginx/ssl/ && rm -f ./nginx/ssl/v3.ext && ./crt.sh && cd ../../
 
 ## Run command in php-fpm container
 function dc_run() {

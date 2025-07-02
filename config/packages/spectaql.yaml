@@ -1,6 +1,6 @@
 spectaql:
-  logoFile: ./public/documentation/logo.png
-  faviconFile: ./public/documentation/logo.png
+#  logoFile: ./public/documentation/logo.png
+#  faviconFile: ./public/documentation/logo.png
   displayAllServers: true
 #  targetDir: ./public/documentation
 

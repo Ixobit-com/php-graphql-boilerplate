@@ -9,12 +9,13 @@ networks:
 
 services:
   nginx:
+    image: ${COMPOSE_PROJECT_NAME}_nginx
     build:
       context: nginx
       args:
-        UID: ${USER_ID}
-        GID: ${GROUP_ID}
-    container_name: nginx
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    container_name: ${COMPOSE_PROJECT_NAME}_nginx
     working_dir: /var/www/html
     networks:
       - network
@@ -29,12 +30,13 @@ services:
       - 443:443
 
   php-fpm:
+    image: ${COMPOSE_PROJECT_NAME}_php-fpm
     build:
       context: php-fpm
       args:
-        UID: ${USER_ID}
-        GID: ${GROUP_ID}
-    container_name: php-fpm
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    container_name: ${COMPOSE_PROJECT_NAME}_php-fpm
     working_dir: /var/www/html
     networks:
       - network
@@ -52,7 +54,7 @@ services:
 
   mysql:
     image: mysql:8.0
-    container_name: mysql
+    container_name: ${COMPOSE_PROJECT_NAME}_mysql
     networks:
       - network
     volumes:
@@ -68,7 +70,7 @@ services:
 
   mail:
     image: mailhog/mailhog
-    container_name: mail
+    container_name: ${COMPOSE_PROJECT_NAME}_mail
     networks:
       - network
     ports:
