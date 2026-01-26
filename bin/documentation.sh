@@ -27,7 +27,7 @@ EOF
 for schema in "${arr[@]}"
 do
     ./bin/console graphql:dump-schema --schema=$schema --classic --format=graphql --file=./schema/$schema.gql
-    npx spectaql --schema-file ./schema/$schema.gql --target-dir ./documentation/$schema/ -c ./config/packages/spectaql.yaml
+    npx spectaql --schema-file ./schema/$schema.gql --target-dir ./documentation/$schema/ -c ./config/spectaql.yaml
     cat << EOF >> ./documentation/index.html
         <li><strong><a href='$schema/index.html' target='doc-content'>$schema</a></strong></li>
 EOF
