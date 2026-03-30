@@ -1,6 +1,6 @@
 FROM php:8.3-fpm-alpine
 
-ENV XDEBUG_VERSION=3.3.2
+ENV XDEBUG_VERSION=3.5.1
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV USER appuser
 
@@ -9,7 +9,7 @@ ARG GROUP_ID
 
 COPY ./conf.d /usr/local/etc/php/conf.d
 
-RUN apk update && apk add --no-cache autoconf g++ make automake sudo git bash unzip linux-headers npm \
+RUN apk update && apk add --no-cache autoconf g++ make automake sudo git bash unzip linux-headers ncurses \
     libzip libpng libjpeg-turbo libwebp freetype \
     zlib-dev libzip-dev \
     libpng-dev libwebp-dev libjpeg-turbo-dev freetype-dev mysql-client mariadb-connector-c \
@@ -27,6 +27,8 @@ RUN apk update && apk add --no-cache autoconf g++ make automake sudo git bash un
     && adduser --disabled-password -u $USER_ID $USER \
     && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
     && chmod 0440 /etc/sudoers.d/$USER
+
+
 
 USER appuser
 

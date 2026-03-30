@@ -63,11 +63,6 @@ Docker environment configure for development purposes only, and include some add
 ## Code style
 * Use `composer phpcs` for code style check and fix.
 
-## API Documentation
-* Documentation generate automatically (use `./bin/documentation.sh` script in docker environment)
-* Main page will be accessible at https://graphql.local/documentation/index.html
-* Also, GraphQL schemas in .gql files are stored in the public/schema directory
-
 ## Links
 https://github.com/overblog/GraphQLBundle \
 https://github.com/lexik/LexikJWTAuthenticationBundle \
