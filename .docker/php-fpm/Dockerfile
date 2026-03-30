@@ -28,8 +28,6 @@ RUN apk update && apk add --no-cache autoconf g++ make automake sudo git bash un
     && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
     && chmod 0440 /etc/sudoers.d/$USER
 
-
-
 USER appuser
 
 WORKDIR /var/www/html
